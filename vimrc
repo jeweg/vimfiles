@@ -1,6 +1,5 @@
 " Jens' vimrc.
 "
-echomsg 'yop'
 set nocompatible
 
 let s:is_windows = has('win16') || has('win32') || has('win64')
