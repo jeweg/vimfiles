@@ -35,8 +35,8 @@ if s:is_windows
     set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
     call vundle#begin("$VIMRUNTIME/../bundle") 
 else
-    set rtp+=~/.vim/bundle/Vundle.vim
-    call vundle#begin('~/.vim/bundle')
+    set rtp+=~/.vim/unversioned/bundle/Vundle.vim
+    call vundle#begin('~/.vim/unversioned/bundle')
 endif
 
 " let Vundle manage Vundle. Required.
@@ -62,6 +62,10 @@ Bundle "tomtom/tlib_vim"
 Bundle "garbas/vim-snipmate"
 Bundle "honza/vim-snippets"
 Bundle "EinfachToll/DidYouMean"
+
+if !s:is_windows
+    Bundle "Valloric/YouCompleteMe"
+endif
 
 "Plugin 'godlygeek/tabular'
 "Plugin 'tpope/vim-fugitive'
@@ -125,7 +129,7 @@ if has('gui_running')
     elseif s:is_windows
         set guifont=Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
-        set guifont=Inconsolata\ 12,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+        set guifont=Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
     endif
 endif
 
@@ -142,10 +146,6 @@ set cursorline
 highlight clear SignColumn
 highlight clear LineNr
 
-
-" Window pos/size restoring {
-
-" }
 " ---------------------------------------------------------------------------- 
 " Settings {
 
@@ -228,6 +228,11 @@ if s:is_windows
     set viewdir=$VIM/tmp
     set directory=$VIM/tmp
     set undodir=$VIM/tmp
+else
+    set backupdir=$HOME/.vim/unversioned/tmp
+    set viewdir=$HOME/.vim/unversioned/tmp
+    set directory=$HOME/.vim/unversioned/tmp
+    set undodir=$HOME/.vim/unversioned/tmp
 endif
 
 set noautochdir
