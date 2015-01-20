@@ -613,9 +613,10 @@ endif
 " bbye {
 " https://github.com/moll/vim-bbye
 
-" map <C-W> :Bdelete<CR>
-" map! <C-W> <Esc>:Bdelete<CR>
-" map <S-C-W> :bufdo :Bdelete<CR> " Close all buffers
+if 1
+  map <C-W> :Bdelete<CR>
+  map! <C-W> <Esc>:Bdelete<CR>
+endif
 
 " }
 " ---------------------------------------------------------------------------- 
