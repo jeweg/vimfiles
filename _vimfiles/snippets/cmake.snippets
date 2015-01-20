@@ -1,0 +1,26 @@
+snippet outm
+	message(STATUS "${1}")
+	${0}
+
+snippet # 
+	###################################################################
+	
+	${0}
+
+snippet outv
+	message(STATUS "${1:name} = \"${$1}\"")
+	${0}
+
+snippet fatal
+	message(FATAL_ERROR "${1}")
+	${0}
+
+snippet foreach
+	foreach(${1} IN LISTS ${2})
+	    ${0}
+	endforeach()
+ 
+snippet func
+	function(${1})
+	    ${0}
+	endfunction()
