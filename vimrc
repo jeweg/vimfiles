@@ -383,6 +383,11 @@ endif
 
 if 1
     let g:ctrlp_working_path_mode = 'ra'
+    
+    let g:ctrlp_clear_cache_on_exit = 0
+    let g:ctrlp_cache_dir = expand("$VIM/tmp")
+    let g:ctrlp_show_hidden = 1
+    
     let g:ctrlp_map = '<c-p>'
     let g:ctrlp_cmd = 'CtrlP'
     let g:ctrlp_custom_ignore = {
@@ -391,15 +396,14 @@ if 1
       \ 'link': 'some_bad_symbolic_links',
       \ }
   
-    " On Windows use "dir" as fallback command.
-    if s:is_windows
-        let s:ctrlp_fallback = 'dir %s /-n /b /s /a-d'
-    elseif executable('ag')
+    if executable('ag')
         let s:ctrlp_fallback = 'ag %s --nocolor -l -g ""'
     elseif executable('ack-grep')
         let s:ctrlp_fallback = 'ack-grep %s --nocolor -f'
     elseif executable('ack')
         let s:ctrlp_fallback = 'ack %s --nocolor -f'
+    elseif s:is_windows
+        let s:ctrlp_fallback = 'dir %s /-n /b /s /a-d'
     else
         let s:ctrlp_fallback = 'find %s -type f'
     endif
