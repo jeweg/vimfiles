@@ -387,9 +387,8 @@ if 1
     let g:ctrlp_clear_cache_on_exit = 0
     let g:ctrlp_cache_dir = expand("$VIM/tmp")
     let g:ctrlp_show_hidden = 1
-    
-    let g:ctrlp_map = '<c-p>'
-    let g:ctrlp_cmd = 'CtrlP'
+    let g:ctrlp_default_input = 1    
+        
     let g:ctrlp_custom_ignore = {
       \ 'dir':  '\v[\/]\.(git|hg|svn|CVS)$',
       \ 'file': '\v\.(exe|so|dll|pyc)$',
@@ -414,6 +413,9 @@ if 1
         \ },
         \ 'fallback': s:ctrlp_fallback
     \ }  
+
+    let g:ctrlp_map = '<c-p>'
+    let g:ctrlp_cmd = 'CtrlP'
 
     map <C-O> :CtrlPMixed<CR>
     map <C-P> :CtrlPMenu<CR>
