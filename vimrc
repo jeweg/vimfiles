@@ -211,11 +211,14 @@ set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic white
 set wrap
 set modelines=1
 
+" Indentation Settings
 set autoindent                  " Indent at the same level of the previous line
-set shiftwidth=4                " Use indents of 4 spaces
 set expandtab                   " Tabs are spaces, not tabs
+set nosmartindent               " Sucks for anything but C-like languages.
+autocmd FileType c,cpp,cs,objc setlocal smartindent
 set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
+set shiftwidth=4                " Use indents of 4 spaces
 
 set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
 set splitright                  " Puts new vsplit windows to the right of the current
@@ -244,7 +247,7 @@ else
     set undodir=$HOME/.vim/unversioned/tmp
 endif
 
-set noautochdir
+set autochdir
 set number
 
 set linebreak
@@ -261,13 +264,7 @@ set hlsearch
 set smartcase
 set ignorecase
 set incsearch
- 
-set autoindent
-set shiftwidth=4
-set smartindent
-set smarttab
-set softtabstop=4
- 
+  
 set formatoptions+=l
 
 set ruler
