@@ -395,6 +395,7 @@ endif
 " I cannot even get to the vimrc by typing "vimrc", that's just silly.
 " And I'm not alone: https://github.com/kien/ctrlp.vim/issues/110
 " Let's try this: https://github.com/JazzCore/ctrlp-cmatcher/
+" or this: https://github.com/burke/matcher
 
 if 1
     let g:ctrlp_working_path_mode = 'ra'
