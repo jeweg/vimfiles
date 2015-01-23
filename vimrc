@@ -1,5 +1,7 @@
-" Jens' vimrc.
-"
+" My vimrc. Jens Weggemann <jensweh@gmail.com>
+" ---------------------------------------------------------------------------- 
+" Very general stuff {{{
+
 set nocompatible
 
 let s:is_windows = has('win16') || has('win32') || has('win64')
@@ -25,8 +27,9 @@ let mapleader = ','
 let g:mapleader = ','
 let g:maplocalleader = 'm'
 
+"}}}
 " ---------------------------------------------------------------------------- 
-" Load plugins {
+" Load plugins {{{
 
 filetype off " Required for Vundle.
 
@@ -62,6 +65,7 @@ Bundle "tomtom/tlib_vim"
 Bundle "garbas/vim-snipmate"
 Bundle "honza/vim-snippets"
 Bundle "EinfachToll/DidYouMean"
+Bundle "nielsmadan/harlequin"
 
 if !s:is_windows
     Bundle "Valloric/YouCompleteMe"
@@ -93,9 +97,9 @@ endif
 
 filetype plugin indent on    " required
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" Appearance and GUI {
+" Appearance and GUI {{{
 
 set background=dark
 if &t_Co >= 256 || has("gui_running")
@@ -146,8 +150,9 @@ set cursorline
 highlight clear SignColumn
 highlight clear LineNr
 
+" }}}
 " ---------------------------------------------------------------------------- 
-" Settings {
+" Settings {{{
 
 set encoding=utf-8
 scriptencoding utf-8
@@ -193,14 +198,17 @@ set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 
-set nofoldenable                  " Auto fold code
+set foldmethod=marker
+set foldmarker="{{{,}}}"
 set foldcolumn=0
+set nofoldenable                  " Auto fold code
 
 " Show whitespace?
 set nolist
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
 set wrap
+set modelines=1
 
 set autoindent                  " Indent at the same level of the previous line
 set shiftwidth=4                " Use indents of 4 spaces
@@ -269,9 +277,9 @@ set backspace=indent,eol,start
 
 autocmd FileType vim setlocal nonumber
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" Restore cursor when re-entering window {
+" Restore cursor when re-entering window {{{
 
 function! ResCur()
     if line("'\"") <= line("$")
@@ -284,9 +292,9 @@ augroup resCur
     autocmd BufWinEnter * call ResCur()
 augroup END
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" Window pos/size restoring {
+" Window pos/size restoring {{{
 " From http://vim.wikia.com/wiki/Restore_screen_size_and_position
 
 " To enable the saving and restoring of screen positions.
@@ -355,9 +363,9 @@ if has("gui_running")
   autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" easymotion {
+" easymotion {{{
 " https://github.com/Lokaltog/vim-easymotion
 " http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/
 
@@ -365,9 +373,9 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
 map <SPACE> <Plug>(easymotion-s2)
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" incsearch {
+" incsearch {{{
 " https://github.com/haya14busa/incsearch.vim
 
 if 1
@@ -376,49 +384,91 @@ if 1
     map g/ <Plug>(incsearch-stay)
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" CtrlP {
+" CtrlP {{{
 " https://github.com/kien/ctrlp.vim
 
 if 1
     let g:ctrlp_working_path_mode = 'ra'
-    let g:ctrlp_map = '<c-p>'
-    let g:ctrlp_cmd = 'CtrlP'
+    
+    " Let's see if we even need caching with silver searcher.
+    let g:ctrlp_use_caching = 0
+    let g:ctrlp_clear_cache_on_exit = 0
+    let g:ctrlp_cache_dir = expand("$VIM/tmp")
+    let g:ctrlp_show_hidden = 1
+    let g:ctrlp_default_input = 1    
+    let g:ctrlp_max_files = 0
+    let g:ctrlp_max_depth = 40
+    let g:ctrlp_by_filename = 1 " default to filename mode. ctrl-d toggles.
+
+    
     let g:ctrlp_custom_ignore = {
       \ 'dir':  '\v[\/]\.(git|hg|svn|CVS)$',
       \ 'file': '\v\.(exe|so|dll|pyc)$',
       \ 'link': 'some_bad_symbolic_links',
       \ }
   
-    " On Windows use "dir" as fallback command.
-    if s:is_windows
-        let s:ctrlp_fallback = 'dir %s /-n /b /s /a-d'
-    elseif executable('ag')
-        let s:ctrlp_fallback = 'ag %s --nocolor -l -g ""'
+    if executable('ag')
+    
+        " Previously:
+        " let s:ctrlp_fallback = 'ag -l --nocolor -g "" %s'
+        " From http://blog.patspam.com/2014/super-fast-ctrlp, slightly modified.
+        let s:ctrlp_fallback = 'ag -i -l --nocolor --nogroup --hidden
+          \ --ignore .git
+          \ --ignore .svn
+          \ --ignore .hg
+          \ --ignore CVS
+          \ --ignore .DS_Store
+          \ --ignore "**/*.exe"
+          \ --ignore "**/*.so"
+          \ --ignore "**/*.dll"
+          \ --ignore "**/*.pyc"
+          \ -g "" %s'
+        
     elseif executable('ack-grep')
         let s:ctrlp_fallback = 'ack-grep %s --nocolor -f'
     elseif executable('ack')
         let s:ctrlp_fallback = 'ack %s --nocolor -f'
+    elseif s:is_windows
+        let s:ctrlp_fallback = 'dir %s /-n /b /s /a-d'
     else
         let s:ctrlp_fallback = 'find %s -type f'
     endif
+    
+    " Delay this output: if we used echo(msg) here, a gui dialog would pop up.
+    " This is because at startup the tty is not yet initialized.
+    autocmd VimEnter * echom "ctrl-p fallback:" s:ctrlp_fallback
+        
     let g:ctrlp_user_command = {
         \ 'types': {
-            \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
-            \ 2: ['.hg', 'hg --cwd %s locate -I .'],
         \ },
         \ 'fallback': s:ctrlp_fallback
     \ }  
+
+    " This is the original:
+    " The git special case didn't work well for me. When using submodules, those
+    " files never end up in the list
+    " let g:ctrlp_user_command = {
+    "     \ 'types': {
+    "         \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
+    "         \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+    "     \ },
+    "     \ 'fallback': s:ctrlp_fallback
+    " \ }  
+    
+    
+    let g:ctrlp_map = '<c-p>'
+    let g:ctrlp_cmd = 'CtrlP'
 
     map <C-O> :CtrlPMixed<CR>
     map <C-P> :CtrlPMenu<CR>
     
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" lightline {
+" lightline {{{
 
 set laststatus=2
 
@@ -537,16 +587,13 @@ function! TagbarStatusFunc(current, sort, fname, ...) abort
   return lightline#statusline(0)
 endfunction
 
-
-
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
 
-
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" UndoTree {
+" UndoTree {{{
 
 if 1
     nnoremap <Leader>u :UndotreeToggle<CR>
@@ -554,9 +601,9 @@ if 1
     let g:undotree_SetFocusWhenToggle=1
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" Syntastic {
+" Syntastic {{{
 " https://github.com/scrooloose/syntastic/blob/master/doc/syntastic.txt
 
 if 0
@@ -576,9 +623,9 @@ if 0
     endfunction
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" Window management {
+" Window management {{{
 " From http://agillo.net/simple-vim-window-management/
 
 if 0
@@ -614,9 +661,9 @@ if 0
     nmap <down>  :3wincmd -<cr>
 endif
   
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" bbye {
+" bbye {{{
 " https://github.com/moll/vim-bbye
 
 if 1
@@ -624,9 +671,9 @@ if 1
   map! <C-W> <Esc>:Bdelete<CR>
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" dwm {
+" dwm {{{
 " https://github.com/spolu/dwm.vim
 
 if 1
@@ -646,9 +693,9 @@ if 1
     " map <C-H> <Plug>DWMShrinkMaster
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" YouCompleteMe {
+" YouCompleteMe {{{
 " https://github.com/Valloric/YouCompleteMe
 " http://stackoverflow.com/a/24520161 
 
@@ -674,9 +721,9 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
 nnoremap <F10> :YcmCompleter GoTo<CR>
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" SnipMate {
+" SnipMate {{{
 " https://github.com/msanders/snipmate.vim/blob/master/doc/snipMate.txt
 
 if 1
@@ -684,9 +731,9 @@ if 1
     smap <C-h> <Plug>snipMateNextOrTrigger
 endif
 
-" }
+" }}}
 " ---------------------------------------------------------------------------- 
-" General key mappings {
+" General key mappings {{{
 
 nmap <silent> <leader>/ :set invhlsearch<CR>
 
@@ -727,4 +774,6 @@ noremap <silent> <F3> :exe "let HlUnderCursor=exists(\"HlUnderCursor\")?HlUnderC
 
 autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
 
-" }
+" }}}
+
+" vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
