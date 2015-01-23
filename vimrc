@@ -200,7 +200,7 @@ set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 
 set foldmethod=marker
-set foldmarker="{{{,}}}"
+set foldmarker={{{,}}}
 set foldcolumn=0
 set nofoldenable                  " Auto fold code
 
@@ -445,7 +445,7 @@ if 1
     
     " Delay this output: if we used echo(msg) here, a gui dialog would pop up.
     " This is because at startup the tty is not yet initialized.
-    autocmd VimEnter * echom "ctrl-p fallback:" s:ctrlp_fallback
+    " autocmd VimEnter * echom "ctrl-p fallback:" s:ctrlp_fallback
         
     let g:ctrlp_user_command = {
         \ 'types': {
