@@ -2,6 +2,8 @@
 " ---------------------------------------------------------------------------- 
 " Very general stuff {{{
 
+scriptencoding utf-8
+set encoding=utf-8
 set nocompatible
 
 let s:is_windows = has('win16') || has('win32') || has('win64')
@@ -60,20 +62,21 @@ Plugin 'spolu/dwm.vim'
 Plugin 'vim-scripts/sessionman.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-scripts/a.vim'
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "garbas/vim-snipmate"
-Bundle "honza/vim-snippets"
-Bundle "EinfachToll/DidYouMean"
-Bundle "nielsmadan/harlequin"
-Bundle "JazzCore/ctrlp-cmatcher"
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'EinfachToll/DidYouMean'
+Plugin 'nielsmadan/harlequin'
+Plugin 'szw/seoul256.vim'
+Plugin 'JazzCore/ctrlp-cmatcher'
+Plugin 'tpope/vim-fugitive'
 
 if !s:is_windows
-    Bundle "Valloric/YouCompleteMe"
+    Bundle 'Valloric/YouCompleteMe'
 endif
 
 "Plugin 'godlygeek/tabular'
-"Plugin 'tpope/vim-fugitive'
 "Plugin 'Shougo/neocomplcache.vim'
 "Plugin 'scrooloose/nerdcommenter'
 "Plugin 'majutsushi/tagbar'
@@ -102,6 +105,15 @@ filetype plugin indent on    " required
 " ---------------------------------------------------------------------------- 
 " Appearance and GUI {{{
 
+" This is a tip from
+" https://github.com/itchyny/lightline.vim/blob/master/doc/lightline.txt.
+" It seems to require
+" export TERM=xterm-256color
+" in .bashrc, though.
+if !has('gui_running')
+    set t_Co=256
+endif
+
 set background=dark
 if &t_Co >= 256 || has("gui_running")
 
@@ -129,12 +141,13 @@ if has('gui_running')
     set guioptions-=e           " No gui tabs
     " set guioptions-=t           " No tearoff menus
 
+    " The "for Powerline" fonts come from https://github.com/powerline/fonts.
     if s:is_mac
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif s:is_windows
-        set guifont=Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
+        set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
-        set guifont=Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+        set guifont=Inconsolata-g\ for\ Powerline\ 10,Inconsolata-g\ 10,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
     endif
 endif
 
@@ -396,19 +409,24 @@ endif
 
 if 1
     let g:ctrlp_working_path_mode = 'ra'
-    
-    " Let's see if we even need caching with silver searcher.
-    let g:ctrlp_use_caching = 0
 
-    " Caching settings
+    let g:ctrlp_match_func = {'match' : 'matcher#cmatch'} 
+
+    " Cache settings
+    let g:ctrlp_use_caching = 1
     let g:ctrlp_clear_cache_on_exit = 0
-    let g:ctrlp_cache_dir = expand("$VIM/tmp")
+    if s:is_windows
+        set backupdir=$HOME/.vim/unversioned/tmp
+        let g:ctrlp_cache_dir = expand("$HOME/.vim/unversioned/tmp")
+    else
+        let g:ctrlp_cache_dir = expand("$VIM/tmp")
+    endif
+
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_default_input = 1    
-
     let g:ctrlp_max_files = 0
     let g:ctrlp_max_depth = 40
-    let g:ctrlp_by_filename = 1 " default to filename mode. ctrl-d toggles.
+    let g:ctrlp_by_filename = 0 " Match in full path or just filename. Ctrl-d toggles.
 
     let g:ctrlp_custom_ignore = {
       \ 'dir':  '\v[\/]\.(git|hg|svn|CVS)$',
@@ -430,6 +448,7 @@ if 1
           \ --ignore "**/*.so"
           \ --ignore "**/*.dll"
           \ --ignore "**/*.pyc"
+          \ --ignore "**/*~"
           \ -g "" %s'
     elseif executable('ack-grep')
         let s:ctrlp_fallback = 'ack-grep %s --nocolor -f'
@@ -452,8 +471,9 @@ if 1
     \ }  
 
     " This is the original:
-    " The git special case didn't work well for me. When using submodules, those
-    " files never end up in the list
+    " The git special case didn't work well for me. When using submodules, file in there
+    " never end up in the candidate list I think. The same goes for files not
+    " yet added to git.
     " let g:ctrlp_user_command = {
     "     \ 'types': {
     "         \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
@@ -476,28 +496,58 @@ endif
 
 set laststatus=2
 
+"TODO: make this depend on
+"if has('gui_running')
+"or the special chars will look completely broken in terminal-vim.
+"Also ue 16color colorscheme in terminal mode. default otherwise.
+
 let g:lightline = {
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-      \ },
-      \ 'component_function': {
-      \   'fugitive': 'MyFugitive',
-      \   'filename': 'MyFilename',
-      \   'fileformat': 'MyFileformat',
-      \   'filetype': 'MyFiletype',
-      \   'fileencoding': 'MyFileencoding',
-      \   'mode': 'MyMode',
-      \   'ctrlpmark': 'CtrlPMark',
-      \ },
-      \ 'component_expand': {
-      \   'syntastic': 'SyntasticStatuslineFlag',
-      \ },
-      \ 'component_type': {
-      \   'syntastic': 'error',
-      \ },
-      \ 'subseparator': { 'left': '|', 'right': '|' }
-      \ }
+        \ 'colorscheme': 'default',
+		\ 'component': {
+		\   'lineinfo': ' %3l:%-2v',
+		\ },
+		\ 'component_function': {
+		\   'readonly': 'MyReadonly',
+		\   'fugitive': 'MyFugitive'
+		\ },
+		\ 'separator': { 'left': '', 'right': '' },
+		\ 'subseparator': { 'left': '', 'right': '' }
+		\ }
+    
+function! MyReadonly()
+    return &readonly ? '' : ''
+endfunction
+function! MyFugitive()
+    if exists('*fugitive#head')
+        let _ = fugitive#head()
+        return strlen(_) ? ''._ : ''
+    endif
+    return ''
+endfunction
+
+
+"let g:lightline = {
+      "\ 'active': {
+      "\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+      "\   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      "\ },
+      "\ 'component_function': {
+      "\   'fugitive': 'MyFugitive',
+      "\   'filename': 'MyFilename',
+      "\   'fileformat': 'MyFileformat',
+      "\   'filetype': 'MyFiletype',
+      "\   'fileencoding': 'MyFileencoding',
+      "\   'mode': 'MyMode',
+      "\   'ctrlpmark': 'CtrlPMark',
+      "\ },
+      "\ 'component_expand': {
+      "\   'syntastic': 'SyntasticStatuslineFlag',
+      "\ },
+      "\ 'component_type': {
+      "\   'syntastic': 'error',
+      "\ },
+      "\ 'subseparator': { 'left': '|', 'right': '|' }
+      "\ }
 
 function! MyModified()
   return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -584,12 +634,12 @@ function! CtrlPStatusFunc_2(str)
   return lightline#statusline(0)
 endfunction
 
-let g:tagbar_status_func = 'TagbarStatusFunc'
-
 function! TagbarStatusFunc(current, sort, fname, ...) abort
     let g:lightline.fname = a:fname
   return lightline#statusline(0)
 endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
 
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
@@ -692,6 +742,7 @@ if 1
     map <C-N> <Plug>DWMNew
     map <C-C> <Plug>DWMClose
     map <C-Space> <Plug>DWMFocus
+    map <C-Cr> <Plug>DWMFocus
 
     " map <C-L> <Plug>DWMGrowMaster
     " map <C-H> <Plug>DWMShrinkMaster
@@ -755,9 +806,9 @@ vnoremap . :normal .<CR>
 " Find merge conflict markers
 map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
-noremap <C-S> <Esc>:w<CR>
-inoremap <C-S> <Esc>:w<CR>
-" inoremap <C-S> <Esc>:w<CR>i
+" Ctrl-S saves. This might not work in a terminal Vim.
+noremap <C-S> <Esc>:update<CR>
+inoremap <C-S> <Esc>:update<CR>
 
 " nnoremap <Tab> <C-j>
 " nnoremap <S-Tab> <C-k>
