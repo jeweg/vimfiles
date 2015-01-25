@@ -69,11 +69,17 @@ Plugin 'honza/vim-snippets'
 Plugin 'EinfachToll/DidYouMean'
 Plugin 'nielsmadan/harlequin'
 Plugin 'szw/seoul256.vim'
-Plugin 'JazzCore/ctrlp-cmatcher'
 Plugin 'tpope/vim-fugitive'
 
 if !s:is_windows
-    Bundle 'Valloric/YouCompleteMe'
+    Plugin 'Valloric/YouCompleteMe'
+
+    " Couldn't get this to work on Windows
+    " even after it compiled successfully:
+    Plugin 'JazzCore/ctrlp-cmatcher'
+else
+    " So let's use this one on Windows instead:
+    Plugin 'FelikZ/ctrlp-py-matcher' 
 endif
 
 "Plugin 'godlygeek/tabular'
@@ -424,7 +430,12 @@ endif
 if 1
     let g:ctrlp_working_path_mode = 'ra'
 
-    let g:ctrlp_match_func = {'match' : 'matcher#cmatch'} 
+    if s:is_windows
+        let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
+    else
+        let g:ctrlp_match_func = {'match' : 'matcher#cmatch'} 
+    endif
+    
 
     " Cache settings
     let g:ctrlp_use_caching = 1
@@ -436,6 +447,9 @@ if 1
         let g:ctrlp_cache_dir = expand("$VIM/tmp")
     endif
 
+    " Set delay to prevent extra search
+    let g:ctrlp_lazy_update = 350
+    
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_default_input = 1    
     let g:ctrlp_max_files = 0
@@ -449,10 +463,12 @@ if 1
       \ }
   
     if executable('ag')
+        set grepprg=ag\ --nogroup\ --nocolor
+    
         " Previously:
         " let s:ctrlp_fallback = 'ag -l --nocolor -g "" %s'
         " From http://blog.patspam.com/2014/super-fast-ctrlp, slightly modified.
-        let s:ctrlp_fallback = 'ag -i -l --nocolor --nogroup --hidden
+        let s:ctrlp_fallback = 'ag -i --nocolor --nogroup --hidden
           \ --ignore .git
           \ --ignore .svn
           \ --ignore .hg
