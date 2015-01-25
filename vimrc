@@ -832,6 +832,11 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
 nnoremap <F10> :YcmCompleter GoTo<CR>
 
+if 0
+    let g:ycm_server_use_vim_stdout = 1
+    let g:ycm_server_log_level = 'debug'
+endif
+
 " }}}
 " ---------------------------------------------------------------------------- 
 " SnipMate {{{
