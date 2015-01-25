@@ -134,6 +134,19 @@ if &t_Co > 2 || has("gui_running")
     syntax on
 endif
 
+" We need a way to tell if we have access to patched fonts.
+" Unfortunately, there doesn't seem to be a way to find the actually used
+" font. We use a variable here and heuristics. If we figure out better ways,
+" we set the variable accordingly. All respective logic uses the variable.
+let s:has_patched_font = 0
+if has('gui_running') && !s:is_windows
+    let s:has_patched_font = 1
+endif
+
+" We make whether we use normal (unpatched) unicode font features depend on
+" this variable. 
+let s:has_unicode_font = 1
+
 if has('gui_running')
     set guioptions-=T           " Remove the toolbar
     set guioptions-=r           " Remove the right-hand scrollbar
@@ -151,6 +164,8 @@ if has('gui_running')
     endif
 endif
 
+set guitablabel=\[%N\]\ %t\ %M 
+
 " Set the language for gvim's menus and more.
 set langmenu=en_US
 let $LANG = 'en_US'
@@ -162,7 +177,7 @@ set showmode
 set cursorline
 
 highlight clear SignColumn
-highlight clear LineNr
+"highlight clear LineNr
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -261,7 +276,6 @@ else
 endif
 
 set autochdir
-set number
 
 set linebreak
 set showbreak=+++
@@ -496,69 +510,75 @@ endif
 
 set laststatus=2
 
-"TODO: make this depend on
-"if has('gui_running')
-"or the special chars will look completely broken in terminal-vim.
-"Also ue 16color colorscheme in terminal mode. default otherwise.
-
 let g:lightline = {
-        \ 'colorscheme': 'default',
-		\ 'component': {
-		\   'lineinfo': ' %3l:%-2v',
-		\ },
-		\ 'component_function': {
-		\   'readonly': 'MyReadonly',
-		\   'fugitive': 'MyFugitive'
-		\ },
-		\ 'separator': { 'left': '', 'right': '' },
-		\ 'subseparator': { 'left': '', 'right': '' }
-		\ }
-    
-function! MyReadonly()
-    return &readonly ? '' : ''
-endfunction
-function! MyFugitive()
-    if exists('*fugitive#head')
-        let _ = fugitive#head()
-        return strlen(_) ? ''._ : ''
-    endif
-    return ''
-endfunction
+    \ 'colorscheme': 'default',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+    \ },
+    \ 'inactive': {
+    \   'left': [ ['filename'] ],
+    \   'right': [ [ 'lineinfo' ], ['percent'] ],
+    \ },
+    \ 'tabline': {
+    \   'left': [ [ 'tabs' ] ],
+    \   'right': [ [ 'close' ] ],
+    \ },
+    \ 'tab': {
+    \   'active': ['tabnum', 'fullfilename'],
+    \   'inactive': ['tabnum', 'filename'],
+    \ },
+    \ 'tab_component_function': {
+    \   'filename': 'MyTabFilename',
+    \   'fullfilename': 'MyTabFullFilename'
+    \ },
+    \ 'component_function': {
+    \   'fugitive': 'MyFugitive',
+    \   'filename': 'MyFilename',
+    \   'fullfilename': 'MyFullFilename',
+    \   'fileformat': 'MyFileformat',
+    \   'filetype': 'MyFiletype',
+    \   'fileencoding': 'MyFileencoding',
+    \   'mode': 'MyMode',
+    \   'ctrlpmark': 'CtrlPMark',
+    \ },
+    \ }
 
-
-"let g:lightline = {
-      "\ 'active': {
-      "\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      "\   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-      "\ },
-      "\ 'component_function': {
-      "\   'fugitive': 'MyFugitive',
-      "\   'filename': 'MyFilename',
-      "\   'fileformat': 'MyFileformat',
-      "\   'filetype': 'MyFiletype',
-      "\   'fileencoding': 'MyFileencoding',
-      "\   'mode': 'MyMode',
-      "\   'ctrlpmark': 'CtrlPMark',
-      "\ },
-      "\ 'component_expand': {
-      "\   'syntastic': 'SyntasticStatuslineFlag',
-      "\ },
-      "\ 'component_type': {
-      "\   'syntastic': 'error',
-      "\ },
-      "\ 'subseparator': { 'left': '|', 'right': '|' }
-      "\ }
-
+" Should be ok.
 function! MyModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+    let mark = '+'
+    if s:has_unicode_font
+        let mark = '★'
+    endif
+    return &ft =~ 'help' ? '' : &modified ? mark : &modifiable ? '' : '-'
 endfunction
 
+" Should be ok.
 function! MyReadonly()
-  return &ft !~? 'help' && &readonly ? 'RO' : ''
+    let mark = 'RO'
+    if s:has_unicode_font
+        let mark = ''
+    endif
+    return &ft !~? 'help' && &readonly ? mark : ''
 endfunction
 
+
+function! MyTabFullFilename(tabindex)
+    "echo getbufvar(1, "&modfied")
+    "echo getbufvar(1, "&readonly")
+    " gettabva
+    return "bar"
+endfunction
+
+
+function! MyTabFilename(tabindex)
+    return "foo"
+endfunction
+
+
+" Should be ok.
 function! MyFilename()
-  let fname = expand('%:t')
+  let fname = expand('%:t') " s/t/F/ for full path.
   return fname == 'ControlP' ? g:lightline.ctrlp_item :
         \ fname == '__Tagbar__' ? g:lightline.fname :
         \ fname =~ '__Gundo\|NERD_tree' ? '' :
@@ -570,22 +590,28 @@ function! MyFilename()
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
+" Should be ok.
 function! MyFugitive()
-  try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-      let mark = ''  " edit here for cool mark
-      let _ = fugitive#head()
-      return strlen(_) ? mark._ : ''
-    endif
-  catch
-  endtry
-  return ''
+    try
+        if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+            let mark = ''
+            if s:has_patched_font
+                let mark = ' '
+            endif
+            let _ = fugitive#head()
+            return strlen(_) ? mark._ : ''
+        endif
+    catch
+    endtry
+    return ''
 endfunction
 
+" Should be ok.
 function! MyFileformat()
   return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
+" Should be ok.
 function! MyFiletype()
   return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
@@ -634,16 +660,24 @@ function! CtrlPStatusFunc_2(str)
   return lightline#statusline(0)
 endfunction
 
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
 function! TagbarStatusFunc(current, sort, fname, ...) abort
     let g:lightline.fname = a:fname
   return lightline#statusline(0)
 endfunction
 
-let g:tagbar_status_func = 'TagbarStatusFunc'
-
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
+
+if s:has_patched_font
+	let g:lightline.separator = { 'left': '', 'right': '' }
+    let g:lightline.subseparator = { 'left': '', 'right': '' }
+else
+    let g:lightline.separator = { 'left': '', 'right': '' }
+    let g:lightline.subseparator = { 'left': '|', 'right': '|' }
+endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -742,7 +776,7 @@ if 1
     map <C-N> <Plug>DWMNew
     map <C-C> <Plug>DWMClose
     map <C-Space> <Plug>DWMFocus
-    map <C-Cr> <Plug>DWMFocus
+    map! <C-Cr> <Plug>DWMFocus
 
     " map <C-L> <Plug>DWMGrowMaster
     " map <C-H> <Plug>DWMShrinkMaster
@@ -754,9 +788,13 @@ endif
 " https://github.com/Valloric/YouCompleteMe
 " http://stackoverflow.com/a/24520161 
 
+" Auto-close scratch window.
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
 let g:ycm_register_as_syntastic_checker = 1 "default 1
 let g:Show_diagnostics_ui = 1 "default 1
-
+    
 "will put icons in Vim's gutter on lines that have a diagnostic set.
 "Turning this off will also turn off the YcmErrorLine and YcmWarningLine
 "highlighting
@@ -832,3 +870,4 @@ autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1
 " }}}
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
+
