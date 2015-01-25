@@ -160,7 +160,7 @@ if has('gui_running')
     set guioptions-=e           " No gui tabs
     " set guioptions-=t           " No tearoff menus
 
-    " The "for Powerline" fonts come from https://github.com/powerline/fonts.
+    " The "for Powerline" fonts come from https://github.com/powerline/fonts
     if s:is_mac
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif s:is_windows
