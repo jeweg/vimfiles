@@ -70,6 +70,7 @@ Plugin 'EinfachToll/DidYouMean'
 Plugin 'nielsmadan/harlequin'
 Plugin 'szw/seoul256.vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'Shougo/vimproc.vim'
 
 if !s:is_windows
     Plugin 'Valloric/YouCompleteMe'
