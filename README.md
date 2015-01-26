@@ -3,10 +3,12 @@ My vim configuration.
 
 ##Quickstart
 
+``` bash
 git clone https://github.com/jweg/vimfiles.git ~/.vim
 cd ~/.vim
 ./init1.sh
 vim
+```
 
 In Vim:
 :PluginInstall
