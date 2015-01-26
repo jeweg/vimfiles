@@ -98,7 +98,6 @@ endif
 " Plugin 'scrooloose/nerdtree.git'
 " Plugin 'troydm/easytree.vim'
 " Plugin 'tomtom/shymenu_vim'
-" Plugin 'kien/ctrlp.vim.git'
 
 call vundle#end()           
 
@@ -884,6 +883,10 @@ if 1
     imap <C-h> <Plug>snipMateNextOrTrigger
     smap <C-h> <Plug>snipMateNextOrTrigger
 endif
+" }}}
+" ---------------------------------------------------------------------------- 
+" fugitive {{{
+" TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
 
 " }}}
 " ---------------------------------------------------------------------------- 
