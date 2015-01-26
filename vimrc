@@ -887,6 +887,7 @@ endif
 " ---------------------------------------------------------------------------- 
 " fugitive {{{
 " TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
+" and http://mislav.uniqpath.com/2014/02/hidden-documentation/
 
 " }}}
 " ---------------------------------------------------------------------------- 
