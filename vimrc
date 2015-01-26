@@ -71,6 +71,7 @@ Plugin 'nielsmadan/harlequin'
 Plugin 'szw/seoul256.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Shougo/vimproc.vim'
+Plugin 'LeafCage/yankround.vim'
 
 if !s:is_windows
     Plugin 'Valloric/YouCompleteMe'
@@ -272,16 +273,15 @@ endif
 
 " temp dirs.
 if s:is_windows
-    set backupdir=$VIM/tmp
-    set viewdir=$VIM/tmp
-    set directory=$VIM/tmp
-    set undodir=$VIM/tmp
+    let s:tmp_dir = expand('$VIM/tmp')
 else
-    set backupdir=$HOME/.vim/unversioned/tmp
-    set viewdir=$HOME/.vim/unversioned/tmp
-    set directory=$HOME/.vim/unversioned/tmp
-    set undodir=$HOME/.vim/unversioned/tmp
+    let s:tmp_dir = expand('$HOME/.vim/unversioned/tmp')
 endif
+let &backupdir=s:tmp_dir
+let &viewdir=s:tmp_dir
+let &directory=s:tmp_dir
+let &undodir=s:tmp_dir
+let g:yankring_history_dir = s:tmp_dir
 
 set autochdir
 
@@ -519,7 +519,9 @@ if 1
 
     map <C-O> :CtrlPMixed<CR>
     map <C-P> :CtrlPMenu<CR>
-   
+
+    let g:ctrlp_yankring_disable = 1
+
     let g:ctrlp_prompt_mappings = {
         \ 'PrtBS()':              ['<bs>', '<c-]>'],
         \ 'PrtDelete()':          ['<del>'],
@@ -831,7 +833,7 @@ if 1
     map <C-N> <Plug>DWMNew
     map <C-C> <Plug>DWMClose
     map <C-Space> <Plug>DWMFocus
-    map! <C-Cr> <Plug>DWMFocus
+    map <C-L> <Plug>DWMFocus
 
     " map <C-L> <Plug>DWMGrowMaster
     " map <C-H> <Plug>DWMShrinkMaster
@@ -888,6 +890,17 @@ endif
 " fugitive {{{
 " TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
 " and http://mislav.uniqpath.com/2014/02/hidden-documentation/
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Yankround {{{
+
+if 1
+    nmap p <Plug>(yankround-p)
+    nmap P <Plug>(yankround-P)
+    "nmap <C-p> <Plug>(yankround-prev)
+    "nmap <C-n> <Plug>(yankround-next)
+endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
