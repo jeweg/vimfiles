@@ -1,0 +1,26 @@
+Except for vundle itself which is included as a submodule, the plugins are only
+defined in the vimrc. However, some plugins have a native component which must
+be built after installing the plugin via :PluginInstall.
+
+youcompleteme:
+    Windows:
+        Using a prebuilt version from TODO
+    Linux:
+        cd ~/.vim/unversioned/bundle/YouCompleteMe
+        ./install.sh --clang-completer
+        
+ctrlp-cmatcher:
+    Windows:
+        I'm ony using this plugin on Linux as I couldn't get it to work on Windows.
+    Linux (Ubuntu):
+        sudo apt-get install python-dev
+        cd ~/.vim/unversioned/bundle/ctrlp-cmatcher
+        ./install.sh
+
+vimproc.vim:
+    Windows:
+        TODO
+    Linux:
+       cd ~/.vim/unversioned/bundle/vimproc.vim
+       make
+        
