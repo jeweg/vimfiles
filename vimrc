@@ -213,8 +213,6 @@ set iskeyword-=.                    " '.' is an end of word designator
 set iskeyword-=#                    " '#' is an end of word designator
 set iskeyword-=-                    " '-' is an end of word designator
 
-set diffopt=filler,vertical
-
 set backup
 if has('persistent_undo')
     set undofile
@@ -351,19 +349,17 @@ augroup END
 " ---------------------------------------------------------------------------- 
 " Diff mode {{{
 
+set diffopt=filler,vertical
 if &diff
-    " Quick "make all windows the same size"
-    noremap <Space> <C-W>=
+    
+    " Faster navigation between differences.
     map <C-Up> [c
     map <C-Down> ]c
 
-    " doesnt work :(
-    "autocmd GUIEnter,VimEnter,TermResponse,VimResized * normal <Space>
-    
-    "autocmd BufReadPost * echom "Hello1"
-    autocmd BufReadPost * normal! <C-W>=
-    
+    " This theme makes diff highlight regions stand out better.
     colorscheme jellybeans
+    
+    " Also see the diff-mode modification in ScreenRestore() below.
 endif
 
 " }}}
@@ -402,10 +398,10 @@ if has("gui_running")
         if len(sizepos) == 5 && sizepos[0] == vim_instance
           silent! execute "set columns=".sizepos[1]." lines=".sizepos[2]
           silent! execute "winpos ".sizepos[3]." ".sizepos[4]
-
+          
           if &diff
-              normal <Space>
-              echom "hi".sizepos[1]
+              " In diff mode, we want to start with equal sized windows.
+              wincmd =
           endif
           
           return
@@ -966,7 +962,7 @@ autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1
 " Demo mode {{{
 " Enable to get a look better suited to presentations/projectors:
 
-if 1
+if 0
     set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
     let g:dwm_master_pane_width="80%"
 
