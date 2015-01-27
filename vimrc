@@ -72,7 +72,7 @@ if 1
     Plugin 'tpope/vim-fugitive'
     Plugin 'Shougo/vimproc.vim'
     Plugin 'LeafCage/yankround.vim'
-    Plugin 'LeafCage/vim-sol'
+    Plugin 'kshenoy/vim-sol'
     Plugin 'freeo/vim-kalisi'
 
     if !s:is_windows
