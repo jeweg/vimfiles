@@ -349,6 +349,25 @@ augroup END
 
 " }}}
 " ---------------------------------------------------------------------------- 
+" Diff mode {{{
+
+if &diff
+    " Quick "make all windows the same size"
+    noremap <Space> <C-W>=
+    map <C-Up> [c
+    map <C-Down> ]c
+
+    " doesnt work :(
+    "autocmd GUIEnter,VimEnter,TermResponse,VimResized * normal <Space>
+    
+    "autocmd BufReadPost * echom "Hello1"
+    autocmd BufReadPost * normal! <C-W>=
+    
+    colorscheme jellybeans
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
 " Window pos/size restoring {{{
 " From http://vim.wikia.com/wiki/Restore_screen_size_and_position
 
@@ -383,6 +402,12 @@ if has("gui_running")
         if len(sizepos) == 5 && sizepos[0] == vim_instance
           silent! execute "set columns=".sizepos[1]." lines=".sizepos[2]
           silent! execute "winpos ".sizepos[3]." ".sizepos[4]
+
+          if &diff
+              normal <Space>
+              echom "hi".sizepos[1]
+          endif
+          
           return
         endif
       endfor
@@ -792,50 +817,15 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
-" Window management {{{
-" From http://agillo.net/simple-vim-window-management/
-
-if 0
-    function! WinMove(key) 
-      let t:curwin = winnr()
-      exec "wincmd ".a:key
-      if (t:curwin == winnr()) "we havent moved
-        if (match(a:key,'[jk]')) "were we going up/down
-          wincmd v
-        else 
-          wincmd s
-        endif
-        exec "wincmd ".a:key
-      endif
-    endfunction
-     
-    map <leader>h              :call WinMove('h')<cr>
-    map <leader>k              :call WinMove('k')<cr>
-    map <leader>l              :call WinMove('l')<cr>
-    map <leader>j              :call WinMove('j')<cr>
-
-    map <leader>wc :wincmd q<cr>
-    map <leader>wr <C-W>r
-
-    map <leader>H              :wincmd H<cr>
-    map <leader>K              :wincmd K<cr>
-    map <leader>L              :wincmd L<cr>
-    map <leader>J              :wincmd J<cr>
-
-    nmap <left>  :3wincmd <<cr>
-    nmap <right> :3wincmd ><cr>
-    nmap <up>    :3wincmd +<cr>
-    nmap <down>  :3wincmd -<cr>
-endif
-  
-" }}}
-" ---------------------------------------------------------------------------- 
 " bbye {{{
 " https://github.com/moll/vim-bbye
 
 if 1
-  map <C-W> :Bdelete<CR>
-  map! <C-W> <Esc>:Bdelete<CR>
+    if !&diff
+        " Only do this in non-diff mode for now.
+        map <C-W> :Bdelete<CR>
+        map! <C-W> <Esc>:Bdelete<CR>
+    endif
 endif
 
 " }}}
@@ -867,35 +857,37 @@ endif
 " https://github.com/Valloric/YouCompleteMe
 " http://stackoverflow.com/a/24520161 
 
-" Auto-close scratch window.
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
+if 1
+    " Auto-close scratch window.
+    let g:ycm_autoclose_preview_window_after_completion = 1
+    let g:ycm_autoclose_preview_window_after_insertion = 1
 
-let g:ycm_register_as_syntastic_checker = 1 "default 1
-let g:Show_diagnostics_ui = 1 "default 1
-    
-"will put icons in Vim's gutter on lines that have a diagnostic set.
-"Turning this off will also turn off the YcmErrorLine and YcmWarningLine
-"highlighting
-let g:ycm_enable_diagnostic_signs = 1
-let g:ycm_enable_diagnostic_highlighting = 1
-let g:ycm_always_populate_location_list = 1 "default 0
-let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
+    let g:ycm_register_as_syntastic_checker = 1 "default 1
+    let g:Show_diagnostics_ui = 1 "default 1
+        
+    "will put icons in Vim's gutter on lines that have a diagnostic set.
+    "Turning this off will also turn off the YcmErrorLine and YcmWarningLine
+    "highlighting
+    let g:ycm_enable_diagnostic_signs = 1
+    let g:ycm_enable_diagnostic_highlighting = 1
+    let g:ycm_always_populate_location_list = 1 "default 0
+    let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
 
-"Console Vim (not Gvim or MacVim) passes '<Nul>' to Vim when the user types
-"'<C-Space>' so YCM will make sure that '<Nul>' is used in the map command when
-"you're editing in console Vim, and '<C-Space>' in GUI Vim. This means that you
-"can just press '<C-Space>' in both console and GUI Vim and YCM will do the
-"right thing.
+    "Console Vim (not Gvim or MacVim) passes '<Nul>' to Vim when the user types
+    "'<C-Space>' so YCM will make sure that '<Nul>' is used in the map command when
+    "you're editing in console Vim, and '<C-Space>' in GUI Vim. This means that you
+    "can just press '<C-Space>' in both console and GUI Vim and YCM will do the
+    "right thing.
 
-let g:ycm_key_invoke_completion = '<C-Space>'
+    let g:ycm_key_invoke_completion = '<C-Space>'
 
-nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
-nnoremap <F10> :YcmCompleter GoTo<CR>
+    nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
+    nnoremap <F10> :YcmCompleter GoTo<CR>
 
-if 0
-    let g:ycm_server_use_vim_stdout = 1
-    let g:ycm_server_log_level = 'debug'
+    if 0
+        let g:ycm_server_use_vim_stdout = 1
+        let g:ycm_server_log_level = 'debug'
+    endif
 endif
 
 " }}}
@@ -912,6 +904,8 @@ endif
 " fugitive {{{
 " TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
 " and http://mislav.uniqpath.com/2014/02/hidden-documentation/
+
+" No customizations here yet.
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -968,22 +962,23 @@ noremap <silent> <F3> :exe "let HlUnderCursor=exists(\"HlUnderCursor\")?HlUnderC
 autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
 
 " }}}
+" ---------------------------------------------------------------------------- 
+" Demo mode {{{
+" Enable to get a look better suited to presentations/projectors:
 
-" vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
-
-
-
-""""
-
-if &diff
+if 1
     set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
     let g:dwm_master_pane_width="80%"
-    "colorscheme sol
 
-    " set background=light
-    " colorscheme kalisi
-
-    " colorscheme github
-    colorscheme jellybeans
+    " Light colorscheme? Here you are.
+    if 0
+        set background=light
+        colorscheme sol
+        "colorscheme github
+    endif
 endif
-  
+
+" }}}
+" ---------------------------------------------------------------------------- 
+
+" vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
