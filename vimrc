@@ -203,7 +203,7 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
 set tabpagemax=99
-set showmode
+set noshowmode
 set cursorline
 
 highlight clear SignColumn
@@ -628,8 +628,8 @@ set laststatus=2
 let g:lightline = {
     \ 'colorscheme': 'default',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+    \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
+    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], [ 'fugitive' ] ]
     \ },
     \ 'inactive': {
     \   'left': [ ['filename'] ],
@@ -689,7 +689,7 @@ function! MyTabFilename(tabindex)
 endfunction
 
 function! MyFilename()
-  let fname = expand('%:t') " s/t/F/ for full path.
+  let fname = expand('%:t')
   return fname == 'ControlP' ? g:lightline.ctrlp_item :
         \ fname == '__Tagbar__' ? g:lightline.fname :
         \ fname =~ '__Gundo\|NERD_tree' ? '' :
@@ -697,7 +697,7 @@ function! MyFilename()
         \ &ft == 'unite' ? unite#get_status_string() :
         \ &ft == 'vimshell' ? vimshell#get_status_string() :
         \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != fname ? ( winwidth(0) > 50 ? expand('%:p') : fname ) : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
