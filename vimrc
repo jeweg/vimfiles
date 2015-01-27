@@ -371,6 +371,8 @@ if &diff
     " Faster navigation between differences.
     map <C-Up> [c
     map <C-Down> ]c
+    
+    autocmd VimResized * wincmd =
         
     " Also see the diff-mode modification in ScreenRestore() below.
 endif
@@ -657,7 +659,6 @@ let g:lightline = {
     \ },
     \ }
 
-" Should be ok.
 function! MyModified()
     let mark = '+'
     if s:has_unicode_font
@@ -666,15 +667,15 @@ function! MyModified()
     return &ft =~ 'help' ? '' : &modified ? mark : &modifiable ? '' : '-'
 endfunction
 
-" Should be ok.
 function! MyReadonly()
     let mark = 'RO'
-    if s:has_unicode_font
-        let mark = ''
+    if s:has_patched_font
+       let mark = ''
+    elseif s:has_unicode_font
+       let mark = '☒'
     endif
     return &ft !~? 'help' && &readonly ? mark : ''
 endfunction
-
 
 function! MyTabFullFilename(tabindex)
     "echo getbufvar(1, "&modfied")
@@ -683,13 +684,10 @@ function! MyTabFullFilename(tabindex)
     return "bar"
 endfunction
 
-
 function! MyTabFilename(tabindex)
     return "foo"
 endfunction
 
-
-" Should be ok.
 function! MyFilename()
   let fname = expand('%:t') " s/t/F/ for full path.
   return fname == 'ControlP' ? g:lightline.ctrlp_item :
@@ -703,7 +701,6 @@ function! MyFilename()
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
-" Should be ok.
 function! MyFugitive()
     try
         if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
@@ -719,12 +716,10 @@ function! MyFugitive()
     return ''
 endfunction
 
-" Should be ok.
 function! MyFileformat()
   return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
-" Should be ok.
 function! MyFiletype()
   return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
