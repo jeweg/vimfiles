@@ -126,10 +126,14 @@ if !has('gui_running')
     set t_Co=256
 endif
 
+if &t_Co > 2 || has("gui_running")
+    syntax on
+endif
+
 set background=dark
 if &t_Co >= 256 || has("gui_running")
 
-    "colorscheme solarized
+    " Candidates I choose not to use right now.
     "colorscheme jellybeans
     "colorscheme codeschool
     "colorscheme coffee
@@ -139,13 +143,25 @@ if &t_Co >= 256 || has("gui_running")
     "colorscheme inkpot
     "colorscheme railscasts
     "colorscheme gruvbox
+    
     colorscheme solarized
+    " Solarized is fine, but there are some details I don't like.
+    " It is designed so nothing stands out too much, but in practice, I'd like some
+    " things to stand out, like the diff changes and folded regions.
 
-endif
-if &t_Co > 2 || has("gui_running")
-    syntax on
-endif
+    " No underlines and brighter fg color (See http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim).
+    hi Folded term=bold ctermfg=11 ctermbg=8 gui=bold guifg=#d7d7af guibg=#073642 guisp=#002b36
 
+    " Or the way it highlights diffs. In a diff, changes need to stand out more,
+    " so I'm overwriting these styles with those of the jellybeans theme which does a better
+    " job in my eyes.
+    hi DiffAdd        term=bold ctermfg=193 ctermbg=22 guifg=#D2EBBE guibg=#437019
+    hi DiffChange     term=bold ctermbg=24 guibg=#2B5B77
+    hi DiffDelete     term=bold ctermfg=16 ctermbg=52 guifg=#40000A guibg=#700009
+    hi DiffText       term=reverse cterm=reverse ctermfg=81 ctermbg=16 gui=reverse guifg=#8fbfdc guibg=#000000
+    
+endif
+    
 " We need a way to tell if we have access to patched fonts.
 " Unfortunately, there doesn't seem to be a way to find the actually used
 " font. We use a variable here and heuristics. If we figure out better ways,
@@ -355,10 +371,7 @@ if &diff
     " Faster navigation between differences.
     map <C-Up> [c
     map <C-Down> ]c
-
-    " This theme makes diff highlight regions stand out better.
-    colorscheme jellybeans
-    
+        
     " Also see the diff-mode modification in ScreenRestore() below.
 endif
 
@@ -962,7 +975,7 @@ autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1
 " Demo mode {{{
 " Enable to get a look better suited to presentations/projectors:
 
-if 1
+if 0
     " Make stuff bigger and spacier.
     if 1
         set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
