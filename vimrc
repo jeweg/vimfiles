@@ -2,8 +2,6 @@
 " ---------------------------------------------------------------------------- 
 " Very general stuff {{{
 
-scriptencoding utf-8
-set encoding=utf-8
 set nocompatible
 
 let s:is_windows = has('win16') || has('win32') || has('win64')
@@ -33,80 +31,87 @@ let g:maplocalleader = 'm'
 " ---------------------------------------------------------------------------- 
 " Load plugins {{{
 
-filetype off " Required for Vundle.
+if 1
 
-" set the runtime path to include Vundle and initialize
-if s:is_windows
-    set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
-    call vundle#begin("$VIMRUNTIME/../bundle") 
-else
-    set rtp+=~/.vim/unversioned/bundle/Vundle.vim
-    call vundle#begin('~/.vim/unversioned/bundle')
+    filetype off " Required for Vundle.
+
+    " set the runtime path to include Vundle and initialize
+    if s:is_windows
+        set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
+        call vundle#begin("$VIMRUNTIME/../bundle") 
+    else
+        set rtp+=~/.vim/unversioned/bundle/Vundle.vim
+        call vundle#begin('~/.vim/unversioned/bundle')
+    endif
+
+    " let Vundle manage Vundle. Required.
+    Plugin 'gmarik/Vundle.vim'
+
+    Plugin 'flazz/vim-colorschemes'
+    Plugin 'vim-scripts/twilight'
+    Plugin 'ciaranm/inkpot'
+    Plugin 'Lokaltog/vim-easymotion'
+    Plugin 'haya14busa/incsearch.vim'
+    Plugin 'moll/vim-bbye'
+    Plugin 'itchyny/lightline.vim'
+    Plugin 'mbbill/undotree'
+    Plugin 'kien/ctrlp.vim.git'
+    Plugin 'sgur/ctrlp-extensions.vim'
+    Plugin 'ap/vim-css-color'
+    Plugin 'spolu/dwm.vim'
+    Plugin 'vim-scripts/sessionman.vim'
+    Plugin 'scrooloose/nerdcommenter'
+    Plugin 'vim-scripts/a.vim'
+    Plugin 'MarcWeber/vim-addon-mw-utils'
+    Plugin 'tomtom/tlib_vim'
+    Plugin 'garbas/vim-snipmate'
+    Plugin 'honza/vim-snippets'
+    Plugin 'EinfachToll/DidYouMean'
+    Plugin 'nielsmadan/harlequin'
+    Plugin 'szw/seoul256.vim'
+    Plugin 'tpope/vim-fugitive'
+    Plugin 'Shougo/vimproc.vim'
+    Plugin 'LeafCage/yankround.vim'
+    Plugin 'LeafCage/vim-sol'
+    Plugin 'freeo/vim-kalisi'
+
+    if !s:is_windows
+        Plugin 'Valloric/YouCompleteMe'
+
+        " Couldn't get this to work on Windows
+        " even after it compiled successfully:
+        Plugin 'JazzCore/ctrlp-cmatcher'
+    else
+        " So let's use this one on Windows instead:
+        Plugin 'FelikZ/ctrlp-py-matcher' 
+    endif
+
+
+    " Tried at one time, not used atm for various reasons:
+    " Plugin 'godlygeek/tabular'
+    " Plugin 'Shougo/neocomplcache.vim'
+    " Plugin 'scrooloose/nerdcommenter'
+    " Plugin 'majutsushi/tagbar'
+    " Plugin 'scrooloose/syntastic'
+    " Plugin 'takac/vim-hardtime'
+    " Plugin 'blueyed/vim-diminactive' 
+    " Plugin 'scrooloose/nerdtree.git'
+    " Plugin 'Shougo/unite.vim'
+    " Plugin 'Shougo/vimfiler.vim'
+    " Plugin 'myusuf3/numbers.vim'
+    " Plugin 'scrooloose/nerdtree.git'
+    " Plugin 'troydm/easytree.vim'
+    " Plugin 'tomtom/shymenu_vim'
+
+    call vundle#end()           
+
+    if s:is_windows
+        set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
+    endif
+
+    filetype plugin indent on    " required
+
 endif
-
-" let Vundle manage Vundle. Required.
-Plugin 'gmarik/Vundle.vim'
-
-Plugin 'flazz/vim-colorschemes'
-Plugin 'vim-scripts/twilight'
-Plugin 'ciaranm/inkpot'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'moll/vim-bbye'
-Plugin 'itchyny/lightline.vim'
-Plugin 'mbbill/undotree'
-Plugin 'kien/ctrlp.vim.git'
-Plugin 'sgur/ctrlp-extensions.vim'
-Plugin 'ap/vim-css-color'
-Plugin 'spolu/dwm.vim'
-Plugin 'vim-scripts/sessionman.vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'vim-scripts/a.vim'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-Plugin 'EinfachToll/DidYouMean'
-Plugin 'nielsmadan/harlequin'
-Plugin 'szw/seoul256.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'Shougo/vimproc.vim'
-Plugin 'LeafCage/yankround.vim'
-
-if !s:is_windows
-    Plugin 'Valloric/YouCompleteMe'
-
-    " Couldn't get this to work on Windows
-    " even after it compiled successfully:
-    Plugin 'JazzCore/ctrlp-cmatcher'
-else
-    " So let's use this one on Windows instead:
-    Plugin 'FelikZ/ctrlp-py-matcher' 
-endif
-
-"Plugin 'godlygeek/tabular'
-"Plugin 'Shougo/neocomplcache.vim'
-"Plugin 'scrooloose/nerdcommenter'
-"Plugin 'majutsushi/tagbar'
-"Plugin 'scrooloose/syntastic'
-"Plugin 'takac/vim-hardtime'
-
-" Plugin 'blueyed/vim-diminactive' 
-" Plugin 'scrooloose/nerdtree.git'
-" Plugin 'Shougo/unite.vim'
-" Plugin 'Shougo/vimfiler.vim'
-" Plugin 'myusuf3/numbers.vim'
-" Plugin 'scrooloose/nerdtree.git'
-" Plugin 'troydm/easytree.vim'
-" Plugin 'tomtom/shymenu_vim'
-
-call vundle#end()           
-
-if s:is_windows
-    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
-endif
-
-filetype plugin indent on    " required
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -208,6 +213,8 @@ set iskeyword-=.                    " '.' is an end of word designator
 set iskeyword-=#                    " '#' is an end of word designator
 set iskeyword-=-                    " '-' is an end of word designator
 
+set diffopt=filler,vertical
+
 set backup
 if has('persistent_undo')
     set undofile
@@ -236,10 +243,25 @@ set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 
+" Unbroken vertical split lines and neater folding look, plx.
+set fillchars=vert:\│,fold:·
 set foldmethod=marker
 set foldmarker={{{,}}}
 set foldcolumn=0
 set nofoldenable                  " Auto fold code
+" From http://dhruvasagar.com/2013/03/28/vim-better-foldtext:
+function! NeatFoldText()
+    let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+    let lines_count = v:foldend - v:foldstart + 1
+    let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
+    let foldchar = matchstr(&fillchars, 'fold:\zs.')
+    let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+    let foldtextend = lines_count_text . repeat(foldchar, 8)
+    let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+    return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+endfunction
+set foldtext=NeatFoldText()
+
 
 " Show whitespace?
 set nolist
@@ -949,3 +971,19 @@ autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
 
+
+
+""""
+
+if &diff
+    set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
+    let g:dwm_master_pane_width="80%"
+    "colorscheme sol
+
+    " set background=light
+    " colorscheme kalisi
+
+    " colorscheme github
+    colorscheme jellybeans
+endif
+  
