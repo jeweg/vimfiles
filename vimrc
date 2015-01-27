@@ -962,12 +962,15 @@ autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1
 " Demo mode {{{
 " Enable to get a look better suited to presentations/projectors:
 
-if 0
-    set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
-    let g:dwm_master_pane_width="80%"
+if 1
+    " Make stuff bigger and spacier.
+    if 1
+        set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
+        let g:dwm_master_pane_width="80%"
+    endif
 
     " Light colorscheme? Here you are.
-    if 0
+    if 1
         set background=light
         colorscheme sol
         "colorscheme github
