@@ -171,6 +171,10 @@ if has('gui_running') && !s:is_windows
     " At the moment the patched fonts just don't look nice enough on Windows.
     let s:has_patched_font = 1
 endif
+let hostname = substitute(system('hostname'), '\n', '', '')
+if hostname == "bravuntu"
+    let s:has_patched_font = 1
+endif
 
 " We make whether we use normal (unpatched) unicode font features depend on
 " this variable. 
@@ -190,6 +194,7 @@ if has('gui_running')
         "set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
         set guifont=Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
+        " Linux
         set guifont=Inconsolata-g\ for\ Powerline\ 10,Inconsolata-g\ 10,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
     endif
 endif
