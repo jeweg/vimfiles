@@ -920,12 +920,19 @@ endif
 " ---------------------------------------------------------------------------- 
 " Yankround {{{
 
-if 1
+if 0
     nmap p <Plug>(yankround-p)
     nmap P <Plug>(yankround-P)
     "nmap <C-p> <Plug>(yankround-prev)
     "nmap <C-n> <Plug>(yankround-next)
 endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Better Python syntax highlighting {{{
+" https://github.com/hdima/python-syntax
+
+let python_highlight_all = 1
 
 " }}}
 " ---------------------------------------------------------------------------- 
