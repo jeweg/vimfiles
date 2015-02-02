@@ -292,7 +292,7 @@ set modelines=1
 " Indentation Settings
 set autoindent                  " Indent at the same level of the previous line
 set expandtab                   " Tabs are spaces, not tabs
-set nosmartindent               " Sucks for anything but C-like languages.
+set nosmartindent               " smartindent sucks for anything but C-like languages.
 autocmd FileType c,cpp,cs,objc setlocal smartindent
 set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
