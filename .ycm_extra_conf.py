@@ -11,6 +11,27 @@ except ImportError:
 
 ###################################################################
 
+DEBUG = True
+
+if DEBUG:
+    import sys
+    if sys.platform.startswith('win'):
+        logfile = r'C:\Users\wegge01\AppData\Local\Temp\ycmlog.txt'
+    else:
+        logfile = '/home/jw/temmp.txt'
+    f = open(logfile, 'wb+')
+    
+def log(msg):
+    if DEBUG:
+        f.write(msg)
+        if not msg.endswith('\n'):
+            f.write('\n')
+        f.flush()
+
+log('log started.')
+
+###################################################################
+
 # These are merely some of the options from the default file that comes
 # with YouCompleteMe. They are probably not ideal for our purposes.
 DEFAULT_FLAGS = [
@@ -42,6 +63,7 @@ DEFAULT_FLAGS = [
 ]
 
 SOURCE_EXTENSIONS = ['.cpp', '.cxx', '.cc', '.c', '.m', '.mm']
+DIRECTORY_BLACKLIST = frozenset(['cbuild', '.svn', '.git', 'CVS'])
 
 ###################################################################
 
@@ -55,6 +77,8 @@ def find_compile_commands(file_path):
     4. in a direct subdir of the subdir of step 3. 
     This search is repeated upwards in the tree.
     """
+
+    log('  find_compile_commands invoked with "%s"' % file_path)
     
     DB_NAME = 'compile_commands.json'
    
@@ -62,12 +86,14 @@ def find_compile_commands(file_path):
     
     def look_in_dir(dir_path):
         trypath = os.path.join(dir_path, DB_NAME)
-        #print '    looking at "%s"' % trypath
+        #log('        Trying "%s"' % trypath)
         if os.path.isfile(trypath):
             candidates.append(trypath)
    
     def look_in_subdirs(dir_path, also_recurse_without_regexp, name_regexp=None):
         for child_name in os.listdir(dir_path):
+            if child_name in DIRECTORY_BLACKLIST:
+                continue
             child_path = os.path.join(dir_path, child_name)
             if not os.path.isdir(child_path):
                 continue
@@ -82,7 +108,7 @@ def find_compile_commands(file_path):
     if not os.path.isdir(curr_dir):
         curr_dir = os.path.dirname(curr_dir)
     while True:
-        #print 'curr_dir = "%s"' % curr_dir
+        log('    curr_dir = "%s"' % curr_dir)
 
         candidates = []
         curr_dir_parent, curr_dir_basename = os.path.split(curr_dir)
@@ -136,11 +162,7 @@ compilation_dbs = {}
 
 # Cache of compilation dbs for file. Full path => ycm_core.CompilationDatabase
 compilation_db_for_file = {}
-
-# Just for debugging:
-#f = open('/home/jw/temmp.txt', 'wb+')
-#f.write('log started...')
-
+        
 ###################################################################
 
 def is_header_file(filename):
@@ -170,41 +192,44 @@ def get_compilation_info(cdb, file_path):
 # This gets called from YouCompleteMe with the full path of a file
 # to do completion on. It should return a list of compile options.
 def FlagsForFile(file_path, **kwargs):
-    #f.write('FlagsForFile called for "%s"\n' % file_path)
+    log('FlagsForFile called for "%s"\n' % file_path)
     # Try to get an apt compilation database (cdb).
     cdb = compilation_db_for_file.get(file_path, None)
     if not cdb:
-        #f.write('   no cdb cached for this file!\n')
+        log('   no cdb cached for this file!\n')
         path = find_compile_commands(file_path)
+        log('   find_compile_commands returned "%s"' % path)
         if path:
             ppath = os.path.dirname(path)
             # Have we already loaded this cdb?
-            #f.write('   found cdb as "%s"\n' % path)
+            if DEBUG:
+                log('   found cdb as "%s"\n' % path)
             cdb = compilation_dbs.get(ppath, None)
             if not cdb: 
-                #f.write('   instantiating cdb.\n')
+                log('   instantiating cdb.\n')
                 cdb = ycm_core.CompilationDatabase(ppath)
                 if cdb:
                     compilation_dbs[ppath] = cdb
             if cdb: 
                 compilation_db_for_file[file_path] = cdb
 
-    # 
     if cdb:
-        #f.write('   getting info from cdb.\n')
+        log('   getting info from cdb.\n')
         # Bear in mind that compilation_info.compiler_flags_ does NOT return a
         # python list, but a "list-like" StringVec object
         compilation_info = get_compilation_info(cdb, file_path)
         if not compilation_info:
-            return None
-        final_flags = list(compilation_info.compiler_flags_)
-        final_flags += ['-I', compilation_info.compiler_working_dir_]
+            log('    no info in cdb.')
+            final_flags = DEFAULT_FLAGS
+        else:
+            final_flags = list(compilation_info.compiler_flags_)
+            final_flags += ['-I', compilation_info.compiler_working_dir_]
 
     else:
-        #f.write('   using default flags')
+        log('   using default flags')
         final_flags = DEFAULT_FLAGS 
 
-    #f.write('   final_flags = %s\n' % final_flags)
+    log('   final_flags = %s\n' % final_flags)
 
     return {
         'flags': final_flags,
