@@ -11,9 +11,10 @@ except ImportError:
 
 ###################################################################
 
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
+    import datetime
     import sys
     if sys.platform.startswith('win'):
         logfile = r'C:\Users\wegge01\AppData\Local\Temp\ycmlog.txt'
@@ -23,7 +24,8 @@ if DEBUG:
     
 def log(msg):
     if DEBUG:
-        f.write(msg)
+        timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+        f.write('%s %s' % (timestamp, msg))
         if not msg.endswith('\n'):
             f.write('\n')
         f.flush()
@@ -64,6 +66,37 @@ DEFAULT_FLAGS = [
 
 SOURCE_EXTENSIONS = ['.cpp', '.cxx', '.cc', '.c', '.m', '.mm']
 DIRECTORY_BLACKLIST = frozenset(['cbuild', '.svn', '.git', 'CVS'])
+DB_NAME = 'compile_commands.json'
+
+###################################################################
+
+class UpdatingCompilationDatabase:
+    def __init__(self, path):
+        self._filepath = os.path.join(path, DB_NAME)
+        if not os.path.isfile(self._filepath):
+            raise IOError('File "%s" not found.' % self._filepath)
+        self._signature = self._get_signature()
+        self._read_internal_db()
+
+    def _get_signature(self):
+        return (os.path.getsize(self._filepath), os.path.getmtime(self._filepath))
+
+    def _read_internal_db(self):
+        self._db = ycm_core.CompilationDatabase(os.path.dirname(self._filepath))
+    
+    def check_for_updates(self):
+        assert(self._filepath)
+        signature = self._get_signature()
+        if signature != self._signature:
+            log('Detected database file change, rebuilding database')
+            self._read_internal_db()
+            self._signature = signature
+        else:
+            log('signature of "%s" not changed.' % self._filepath)
+
+    def GetCompilationInfoForFile(self, path):
+        self.check_for_updates()
+        return self._db.GetCompilationInfoForFile(path)
 
 ###################################################################
 
@@ -77,10 +110,7 @@ def find_compile_commands(file_path):
     4. in a direct subdir of the subdir of step 3. 
     This search is repeated upwards in the tree.
     """
-
     log('  find_compile_commands invoked with "%s"' % file_path)
-    
-    DB_NAME = 'compile_commands.json'
    
     candidates = []
     
@@ -102,13 +132,11 @@ def find_compile_commands(file_path):
                 if also_recurse_without_regexp:
                     look_in_subdirs(child_path, False)
 
-
-            
     curr_dir = os.path.realpath(file_path)
     if not os.path.isdir(curr_dir):
         curr_dir = os.path.dirname(curr_dir)
     while True:
-        log('    curr_dir = "%s"' % curr_dir)
+        log('       (looking for db file in "%s")' % curr_dir)
 
         candidates = []
         curr_dir_parent, curr_dir_basename = os.path.split(curr_dir)
@@ -157,10 +185,10 @@ def find_compile_commands(file_path):
 
 ###################################################################
 
-# Known compilation dbs. Directory => ycm_core.CompilationDatabase
+# Known compilation dbs. Directory => UpdatingCompilationDatabase
 compilation_dbs = {}
 
-# Cache of compilation dbs for file. Full path => ycm_core.CompilationDatabase
+# Cache of compilation dbs for file. Full path => UpdatingCompilationDatabase
 compilation_db_for_file = {}
         
 ###################################################################
@@ -192,50 +220,58 @@ def get_compilation_info(cdb, file_path):
 # This gets called from YouCompleteMe with the full path of a file
 # to do completion on. It should return a list of compile options.
 def FlagsForFile(file_path, **kwargs):
-    log('FlagsForFile called for "%s"\n' % file_path)
-    # Try to get an apt compilation database (cdb).
-    cdb = compilation_db_for_file.get(file_path, None)
-    if not cdb:
-        log('   no cdb cached for this file!\n')
-        path = find_compile_commands(file_path)
-        log('   find_compile_commands returned "%s"' % path)
-        if path:
-            ppath = os.path.dirname(path)
-            # Have we already loaded this cdb?
-            if DEBUG:
-                log('   found cdb as "%s"\n' % path)
-            cdb = compilation_dbs.get(ppath, None)
-            if not cdb: 
-                log('   instantiating cdb.\n')
-                cdb = ycm_core.CompilationDatabase(ppath)
-                if cdb:
-                    compilation_dbs[ppath] = cdb
-            if cdb: 
-                compilation_db_for_file[file_path] = cdb
+    try:
 
-    if cdb:
-        log('   getting info from cdb.\n')
-        # Bear in mind that compilation_info.compiler_flags_ does NOT return a
-        # python list, but a "list-like" StringVec object
-        compilation_info = get_compilation_info(cdb, file_path)
-        if not compilation_info:
-            log('    no info in cdb.')
-            final_flags = DEFAULT_FLAGS
+        log('FlagsForFile called for "%s"\n' % file_path)
+        log('   cached: %s dbs, %s files' % (len(compilation_dbs), len(compilation_db_for_file)))
+        # Try to get an apt compilation database (cdb).
+        cdb = compilation_db_for_file.get(file_path, None)
+        if not cdb:
+            log('   no cdb cached for this file!\n')
+            path = find_compile_commands(file_path)
+            log('   find_compile_commands returned "%s"' % path)
+            if path:
+                ppath = os.path.dirname(path)
+                # Have we already loaded this cdb?
+                if DEBUG:
+                    log('   found cdb as "%s"\n' % path)
+                cdb = compilation_dbs.get(ppath, None)
+                if not cdb: 
+                    log('   instantiating cdb.\n')
+                    cdb = UpdatingCompilationDatabase(ppath)
+                    if cdb:
+                        log('    caching for path %s' % ppath)
+                        compilation_dbs[ppath] = cdb
+                if cdb: 
+                    compilation_db_for_file[file_path] = cdb
+
+        if cdb:
+            log('   getting info from cdb.\n')
+            # Bear in mind that compilation_info.compiler_flags_ does NOT return a
+            # python list, but a "list-like" StringVec object
+            compilation_info = get_compilation_info(cdb, file_path)
+            if not compilation_info:
+                log('    no info in cdb.')
+                final_flags = DEFAULT_FLAGS
+            else:
+                final_flags = list(compilation_info.compiler_flags_)
+                final_flags += ['-I', compilation_info.compiler_working_dir_]
+
         else:
-            final_flags = list(compilation_info.compiler_flags_)
-            final_flags += ['-I', compilation_info.compiler_working_dir_]
+            log('   using default flags')
+            final_flags = DEFAULT_FLAGS 
 
-    else:
-        log('   using default flags')
-        final_flags = DEFAULT_FLAGS 
+        log('   final_flags = %s\n' % final_flags)
 
-    log('   final_flags = %s\n' % final_flags)
+        return {
+            'flags': final_flags,
+            'do_cache': False # Otherwise FlagsForFile is not called again. We cache ourselves.
+        }
 
-    return {
-        'flags': final_flags,
-        'do_cache': True
-    }
-
+    except Exception as err:
+        log('Exception: %s' % err)
+        raise err
+    
 ###################################################################
 
 if __name__ == '__main__':
