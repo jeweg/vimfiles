@@ -1,0 +1,7 @@
+" This script is meant to be sourced from Vim.
+" It will adjust settings so things look nice when doing a presentation.
+
+set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
+let g:dwm_master_pane_width="80%"
+
+        

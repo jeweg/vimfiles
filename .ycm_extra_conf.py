@@ -271,11 +271,3 @@ def FlagsForFile(file_path, **kwargs):
     except Exception as err:
         log('Exception: %s' % err)
         raise err
-    
-###################################################################
-
-if __name__ == '__main__':
-    print find_compile_commands(r'/home/jw/Documents/work/sv/local/qt5test/qt5test/src/MainWindow.cpp')
-    print find_compile_commands(r'/home/jw/Documents/work/sv/local/qt5test/qt5test/src')
-    print find_compile_commands(r'/mnt/main2/former-j/_jw_dev4/motor/database/TestRingMap.cpp')
-
