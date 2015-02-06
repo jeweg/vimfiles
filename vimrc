@@ -58,7 +58,6 @@ if 1
     Plugin 'kien/ctrlp.vim.git'
     Plugin 'sgur/ctrlp-extensions.vim'
     Plugin 'ap/vim-css-color'
-    Plugin 'spolu/dwm.vim'
     Plugin 'vim-scripts/sessionman.vim'
     Plugin 'scrooloose/nerdcommenter'
     Plugin 'vim-scripts/a.vim'
@@ -74,6 +73,13 @@ if 1
     Plugin 'LeafCage/yankround.vim'
     Plugin 'kshenoy/vim-sol'
     Plugin 'freeo/vim-kalisi'
+    Plugin 'kien/rainbow_parentheses.vim'
+    Plugin 'mhinz/vim-startify'
+    Plugin 'terryma/vim-expand-region'
+    
+    "Plugin 'zhaocai/GoldenView.Vim'
+    Plugin 'spolu/dwm.vim'
+
 
     if !s:is_windows
         Plugin 'Valloric/YouCompleteMe'
@@ -324,10 +330,10 @@ let &directory=s:tmp_dir
 let &undodir=s:tmp_dir
 let g:yankring_history_dir = s:tmp_dir
 
-set autochdir
+set noautochdir
 
 set linebreak
-set showbreak=+++
+set showbreak=►►►
 set textwidth=0
 set wrapmargin=0
 set showmatch
@@ -862,6 +868,28 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
+" GoldenView {{{
+" http://zhaocai.github.io/GoldenView.Vim/
+
+if 0
+    let g:goldenview__enable_default_mapping = 0
+  
+    "nmap <silent> <C-N> :wincmd n<Cr>
+    " 1. split to tiled windows
+    "nmap <silent> <C-N>  <Plug>GoldenViewSplit
+
+    " 2. quickly switch current window with the main pane
+    " and toggle back
+    "nmap <silent> <C-l>  <Plug>GoldenViewSwitchMain
+
+    " 3. jump to next and previous window
+    "nmap <silent> <C-k>  <Plug>GoldenViewNext
+    "nmap <silent> <C-j>  <Plug>GoldenViewPrevious
+    "
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
 " YouCompleteMe {{{
 " https://github.com/Valloric/YouCompleteMe
 " http://stackoverflow.com/a/24520161 
@@ -925,6 +953,34 @@ if 0
     nmap P <Plug>(yankround-P)
     "nmap <C-p> <Plug>(yankround-prev)
     "nmap <C-n> <Plug>(yankround-next)
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Rainbow parentheses {{{
+" https://github.com/kien/rainbow_parentheses.vim
+
+if 1
+    au Syntax * RainbowParenthesesLoadRound
+    au Syntax * RainbowParenthesesLoadSquare
+    au Syntax * RainbowParenthesesLoadBraces
+    nmap <leader>r :RainbowParenthesesToggle<Cr>
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Startify {{
+" https://github.com/mhinz/vim-startify
+
+if 1
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Expand-Region {{
+" https://github.com/terryma/vim-expand-region
+
+if 1
 endif
 
 " }}}
