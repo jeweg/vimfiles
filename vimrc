@@ -333,11 +333,19 @@ let g:yankring_history_dir = s:tmp_dir
 set noautochdir
 
 set linebreak
-set showbreak=►►►
+if s:has_patched_font
+    set showbreak=
+elseif s:has_unicode_font
+    set showbreak=►►
+else
+    set showbreak=>>
+endif
+
 set textwidth=0
 set wrapmargin=0
 set showmatch
 
+" Disable visual and audio flash.
 " See http://vim.wikia.com/wiki/Disable_beeping#Disable_beep_and_flash_with_an_autocmd
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
