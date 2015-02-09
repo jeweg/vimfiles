@@ -1,3 +1,12 @@
+snippet new
+	cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+	project(${1})
+	
+	${0}
+
+snippet adde
+	add_executable(${1} ${0})
+
 snippet outm
 	message(STATUS "${1}")
 	${0}

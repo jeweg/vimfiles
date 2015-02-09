@@ -63,8 +63,6 @@ if 1
     Plugin 'vim-scripts/a.vim'
     Plugin 'MarcWeber/vim-addon-mw-utils'
     Plugin 'tomtom/tlib_vim'
-    Plugin 'garbas/vim-snipmate'
-    Plugin 'honza/vim-snippets'
     Plugin 'EinfachToll/DidYouMean'
     Plugin 'nielsmadan/harlequin'
     Plugin 'szw/seoul256.vim'
@@ -77,6 +75,9 @@ if 1
     Plugin 'mhinz/vim-startify'
     Plugin 'terryma/vim-expand-region'
     
+    Plugin 'honza/vim-snippets'
+    Plugin 'SirVer/ultisnips'
+
     "Plugin 'zhaocai/GoldenView.Vim'
     Plugin 'spolu/dwm.vim'
 
@@ -94,6 +95,7 @@ if 1
 
 
     " Tried at one time, not used atm for various reasons:
+    " Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
     " Plugin 'godlygeek/tabular'
     " Plugin 'Shougo/neocomplcache.vim'
     " Plugin 'scrooloose/nerdcommenter'
@@ -929,6 +931,23 @@ if 1
     nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
     nnoremap <F10> :YcmCompleter GoTo<CR>
 
+    if s:is_windows
+        let g:ycm_filetype_blacklist = {
+        \ 'tagbar' : 1,
+        \ 'qf' : 1,
+        \ 'notes' : 1,
+        \ 'markdown' : 1,
+        \ 'unite' : 1,
+        \ 'text' : 1,
+        \ 'vimwiki' : 1,
+        \ 'pandoc' : 1,
+        \ 'infolog' : 1,
+        \ 'mail' : 1
+        \}
+        let g:ycm_filetype_blacklist.c = 1
+        let g:ycm_filetype_blacklist.cpp = 1
+    endif
+
     if 0
         let g:ycm_server_use_vim_stdout = 1
         let g:ycm_server_log_level = 'debug'
@@ -940,9 +959,29 @@ endif
 " SnipMate {{{
 " https://github.com/msanders/snipmate.vim/blob/master/doc/snipMate.txt
 
-if 1
+if 0
     imap <C-h> <Plug>snipMateNextOrTrigger
     smap <C-h> <Plug>snipMateNextOrTrigger
+endif
+" }}}
+" ---------------------------------------------------------------------------- 
+" UltiSnips {{{
+" https://github.com/SirVer/ultisnips
+
+if 1
+    let g:UltiSnipsExpandTrigger="<C-h>"
+    let g:UltiSnipsJumpForwardTrigger="<C-h>"
+    
+    " This key mapping seems to break the C-h mapping.
+    "let g:UltiSnipsJumpBackwardTrigger="<C-S-h>"
+    
+    let g:UltiSnipsEditSplit="normal"
+
+    if s:is_windows
+        let g:UltiSnipsSnippetsDir = expand('$VIM/vimfiles/snippets')
+    else
+        let g:UltiSnipsSnippetsDir = expand('$HOME/.vim/snippets')
+    endif    
 endif
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -977,7 +1016,7 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
-" Startify {{
+" Startify {{{
 " https://github.com/mhinz/vim-startify
 
 if 1
@@ -985,7 +1024,7 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
-" Expand-Region {{
+" Expand-Region {{{
 " https://github.com/terryma/vim-expand-region
 
 if 1
