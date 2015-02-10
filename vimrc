@@ -55,8 +55,6 @@ if 1
     Plugin 'moll/vim-bbye'
     Plugin 'itchyny/lightline.vim'
     Plugin 'mbbill/undotree'
-    Plugin 'kien/ctrlp.vim.git'
-    Plugin 'sgur/ctrlp-extensions.vim'
     Plugin 'ap/vim-css-color'
     Plugin 'vim-scripts/sessionman.vim'
     Plugin 'scrooloose/nerdcommenter'
@@ -81,16 +79,19 @@ if 1
     "Plugin 'zhaocai/GoldenView.Vim'
     Plugin 'spolu/dwm.vim'
 
+    Plugin 'Shougo/unite.vim'
+    "Plugin 'kien/ctrlp.vim.git'
+    "Plugin 'sgur/ctrlp-extensions.vim'
 
     if !s:is_windows
         Plugin 'Valloric/YouCompleteMe'
 
         " Couldn't get this to work on Windows
         " even after it compiled successfully:
-        Plugin 'JazzCore/ctrlp-cmatcher'
+        "Plugin 'JazzCore/ctrlp-cmatcher'
     else
         " So let's use this one on Windows instead:
-        Plugin 'FelikZ/ctrlp-py-matcher' 
+        "Plugin 'FelikZ/ctrlp-py-matcher' 
     endif
 
 
@@ -508,7 +509,7 @@ endif
 " Let's try this: https://github.com/JazzCore/ctrlp-cmatcher/
 " or this: https://github.com/burke/matcher
 
-if 1
+if 0
     let g:ctrlp_working_path_mode = 'ra'
 
     if s:is_windows
@@ -640,6 +641,136 @@ if 1
 
 endif
 
+" }}}
+" ---------------------------------------------------------------------------- 
+" Unite {{{
+if 1
+
+" Unite
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+"
+"nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
+"nnoremap <leader>ff :<C-u>Unite -no-split -buffer-name=files   -start-insert file<cr>
+"nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru     -start-insert file_mru<cr>
+"nnoremap <leader>o :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
+"nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank    history/yank<cr>
+"nnoremap <leader>e :<C-u>Unite -no-split -buffer-name=buffer  buffer<cr>
+
+"nnoremap <leader>ft :Unite file_rec/async -default-action=tabopen
+"nnoremap <leader>fs :Unite file_rec/async -default-action=split
+"nnoremap <leader>fv :Unite file_rec/async -default-action=vsplit
+"nnoremap <leader>fc :Unite file_rec/async
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+endfunction
+
+
+if 0
+" The advanced configuration example from https://github.com/Shougo/unite.vim/blob/master/doc/unite.txt
+" -->
+" The prefix key.
+nnoremap    [unite]   <Nop>
+nmap    f [unite]
+
+nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir
+        \ -buffer-name=files buffer bookmark file<CR>
+nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir
+        \ -buffer-name=files buffer bookmark file<CR>
+nnoremap <silent> [unite]r  :<C-u>Unite
+        \ -buffer-name=register register<CR>
+nnoremap <silent> [unite]o  :<C-u>Unite outline<CR>
+nnoremap <silent> [unite]f
+        \ :<C-u>Unite -buffer-name=resume resume<CR>
+nnoremap <silent> [unite]ma
+        \ :<C-u>Unite mapping<CR>
+nnoremap <silent> [unite]me
+        \ :<C-u>Unite output:message<CR>
+nnoremap  [unite]f  :<C-u>Unite source<CR>
+
+nnoremap <silent> [unite]s
+        \ :<C-u>Unite -buffer-name=files -no-split
+        \ jump_point file_point buffer_tab
+        \ file_rec:! file file/new<CR>
+
+" Start insert.
+"call unite#custom#profile('default', 'context', {
+"\   'start_insert': 1
+"\ })
+
+" Like ctrlp.vim settings.
+"call unite#custom#profile('default', 'context', {
+"\   'start_insert': 1,
+"\   'winheight': 10,
+"\   'direction': 'botright',
+"\ })
+
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+  " Overwrite settings.
+
+  imap <buffer> jj      <Plug>(unite_insert_leave)
+  "imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
+
+  imap <buffer><expr> j unite#smart_map('j', '')
+  imap <buffer> <TAB>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
+  imap <buffer> '     <Plug>(unite_quick_match_default_action)
+  nmap <buffer> '     <Plug>(unite_quick_match_default_action)
+  imap <buffer><expr> x
+          \ unite#smart_map('x', "\<Plug>(unite_quick_match_choose_action)")
+  nmap <buffer> x     <Plug>(unite_quick_match_choose_action)
+  nmap <buffer> <C-z>     <Plug>(unite_toggle_transpose_window)
+  imap <buffer> <C-z>     <Plug>(unite_toggle_transpose_window)
+  imap <buffer> <C-y>     <Plug>(unite_narrowing_path)
+  nmap <buffer> <C-y>     <Plug>(unite_narrowing_path)
+  nmap <buffer> <C-j>     <Plug>(unite_toggle_auto_preview)
+  nmap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
+  imap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
+  nnoremap <silent><buffer><expr> l
+          \ unite#smart_map('l', unite#do_action('default'))
+
+  let unite = unite#get_current_unite()
+  if unite.profile_name ==# 'search'
+    nnoremap <silent><buffer><expr> r     unite#do_action('replace')
+  else
+    nnoremap <silent><buffer><expr> r     unite#do_action('rename')
+  endif
+
+  nnoremap <silent><buffer><expr> cd     unite#do_action('lcd')
+  nnoremap <buffer><expr> S      unite#mappings#set_current_filters(
+          \ empty(unite#mappings#get_current_filters()) ?
+          \ ['sorter_reverse'] : [])
+
+  " Runs "split" action by <C-s>.
+  imap <silent><buffer><expr> <C-s>     unite#do_action('split')
+endfunction
+
+if executable('jvgrep')
+  " For jvgrep.
+  let g:unite_source_grep_command = 'jvgrep'
+  let g:unite_source_grep_default_opts = '-i --exclude ''\.(git|svn|hg|bzr)'''
+  let g:unite_source_grep_recursive_opt = '-R'
+endif
+
+" For ack.
+if executable('ack-grep')
+  " let g:unite_source_grep_command = 'ack-grep'
+  " let g:unite_source_grep_default_opts = '-i --no-heading --no-color -k -H'
+  " let g:unite_source_grep_recursive_opt = ''
+endif
+endif
+
+
+
+endif
 " }}}
 " ---------------------------------------------------------------------------- 
 " lightline {{{
