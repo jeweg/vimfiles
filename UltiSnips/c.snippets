@@ -11,16 +11,16 @@ snippet once "Surround with include guard"
 #pragma once
 #ifndef ${1:`!p
 if not snip.c:
-
-	import uuid
-	snip.rv = 'INCL_GUARD_' + str(uuid.uuid4()).replace('-', '').upper()
-
-	#import random, string
-	#name = re.sub(r'[^A-Za-z0-9]+','_', snip.fn).upper()
-	#rand = ''.join(random.sample(string.ascii_letters+string.digits, 8))
-	#snip.rv = ('%s_%s' % (name,rand)).upper()
+    import uuid
+    # Vim's syntax highlighting for C/C++ seems to have problems with
+    # preprocessor macros containing a "0". The coloring of such macros
+    # stops before the 0. We can avoid this by only using UUIDs without zeroes.
+    while True:
+        uuid_str = str(uuid.uuid4())
+        if not '0' in uuid_str: break
+    snip.rv = 'INCL_GUARD_' + uuid_str.replace('-', '').upper()
 else:
-	snip.rv = snip.c
+    snip.rv = snip.c
 `}
 #define $1
 
