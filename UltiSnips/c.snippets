@@ -1,0 +1,52 @@
+snippet fori "for (i;<;++)"
+for (int i = ${1}; i < ${2}; ++i)
+{
+    ${VISUAL}${0}
+}
+endsnippet
+
+###########################################################
+
+snippet once "Surround with include guard"
+#pragma once
+#ifndef ${1:`!p
+if not snip.c:
+
+	import uuid
+	snip.rv = 'INCL_GUARD_' + str(uuid.uuid4()).replace('-', '').upper()
+
+	#import random, string
+	#name = re.sub(r'[^A-Za-z0-9]+','_', snip.fn).upper()
+	#rand = ''.join(random.sample(string.ascii_letters+string.digits, 8))
+	#snip.rv = ('%s_%s' % (name,rand)).upper()
+else:
+	snip.rv = snip.c
+`}
+#define $1
+
+${VISUAL}${0}
+
+#endif /* Include guard. */
+
+endsnippet
+
+###########################################################
+
+snippet one "Surround with include guard"
+#pragma once
+#ifndef ${1:Hello}
+#define $1
+
+${VISUAL}${0}
+
+#endif /* Include guard. */
+
+endsnippet
+
+
+
+snippet a
+<a href="${1:http://www.${2:example.com}}"</a>
+    $0
+</a>
+endsnippet

@@ -73,7 +73,7 @@ if 1
     Plugin 'mhinz/vim-startify'
     Plugin 'terryma/vim-expand-region'
     
-    Plugin 'honza/vim-snippets'
+    "Plugin 'honza/vim-snippets'
     Plugin 'SirVer/ultisnips'
 
     "Plugin 'zhaocai/GoldenView.Vim'
@@ -1076,17 +1076,19 @@ endif
 
 if 1
     let g:UltiSnipsExpandTrigger="<C-h>"
-    let g:UltiSnipsJumpForwardTrigger="<C-h>"
     
-    " This key mapping seems to break the C-h mapping.
-    "let g:UltiSnipsJumpBackwardTrigger="<C-S-h>"
-    
+    " Unfortunately, using the same mapping for both functions
+    " seems to break completion with default values.
+    "let g:UltiSnipsJumpForwardTrigger="<C-h>"
+    let g:UltiSnipsJumpForwardTrigger="<C-j>"
+    let g:UltiSnipsJumpBackwardTrigger="<C-k>"    
+
     let g:UltiSnipsEditSplit="normal"
 
     if s:is_windows
-        let g:UltiSnipsSnippetsDir = expand('$VIM/vimfiles/snippets')
+        let g:UltiSnipsSnippetsDir = expand('$VIM/vimfiles/UltiSnips')
     else
-        let g:UltiSnipsSnippetsDir = expand('$HOME/.vim/snippets')
+        let g:UltiSnipsSnippetsDir = expand('$HOME/.vim/UltiSnips')
     endif    
 endif
 " }}}
@@ -1126,6 +1128,8 @@ endif
 " https://github.com/mhinz/vim-startify
 
 if 1
+    "TODO: doesn't work yet. Figure it out.
+    "autocmd BufNew "" Startify
 endif
 
 " }}}

@@ -1,0 +1,43 @@
+priority -2
+
+extends c
+
+priority -1
+
+###########################################################
+    
+snippet "ns(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?(\s+\S+)?" "namespaces" br
+`!p
+if match.group(1) is None:
+    snip.rv = snip.mkline('namespace {\n')
+    snip.rv += snip.mkline('} // anonymous namespace')
+else:
+    MAX_PER_LINE = 4
+    curr_count = 0
+    curr_line = ''
+    curr_in_line = 0
+    header = ''
+    closing = ''
+    comment = ' // namespace '
+    def commit_curr_line():
+        snip.rv += snip.mkline(curr_line + '\n')
+    for group in match.groups():
+        if group is None: break
+        group = group.strip()
+        if curr_in_line == MAX_PER_LINE:
+            commit_curr_line()
+            curr_line = 0
+            curr_in_line = 0
+        if curr_in_line > 0: curr_line += ' '
+        curr_line += 'namespace %s {' % group
+        closing += '}'        
+        if curr_count > 0: comment += '::'
+        comment += group
+        curr_in_line += 1
+        curr_count += 1
+    if curr_line:
+        commit_curr_line()
+
+    snip.rv += snip.mkline(closing + comment)
+`
+endsnippet
