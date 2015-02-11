@@ -80,6 +80,7 @@ if 1
     Plugin 'spolu/dwm.vim'
 
     Plugin 'Shougo/unite.vim'
+    Plugin 'Shougo/neomru.vim'
     "Plugin 'kien/ctrlp.vim.git'
     "Plugin 'sgur/ctrlp-extensions.vim'
 
@@ -663,7 +664,7 @@ call unite#custom#profile('default', 'context', {
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
-nnoremap <silent> <c-o> :Unite -auto-resize buffer file file_rec/async -default-action=split<cr>
+nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
 " needs neomru
 "nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
 
