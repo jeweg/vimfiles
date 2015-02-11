@@ -100,13 +100,11 @@ if 1
     " Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
     " Plugin 'godlygeek/tabular'
     " Plugin 'Shougo/neocomplcache.vim'
-    " Plugin 'scrooloose/nerdcommenter'
     " Plugin 'majutsushi/tagbar'
     " Plugin 'scrooloose/syntastic'
     " Plugin 'takac/vim-hardtime'
     " Plugin 'blueyed/vim-diminactive' 
     " Plugin 'scrooloose/nerdtree.git'
-    " Plugin 'Shougo/unite.vim'
     " Plugin 'Shougo/vimfiler.vim'
     " Plugin 'myusuf3/numbers.vim'
     " Plugin 'scrooloose/nerdtree.git'
