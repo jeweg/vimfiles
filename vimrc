@@ -676,7 +676,14 @@ function! s:my_unite_settings()
     nmap <buffer> a <Plug>(unite_choose_action)
     
     " Shorten path one part
-    imap <buffer> <C-h> <Plug>(unite_delete_backward_path)    
+    imap <buffer> <C-h> <Plug>(unite_delete_backward_path)
+    
+    nmap <buffer><silent> <C-i> :UniteClose<Cr>
+    nmap <buffer><silent> <C-o> :UniteClose<Cr>
+    nmap <buffer><silent> <C-p> :UniteClose<Cr>
+    imap <buffer><silent> <C-i> <Esc>:UniteClose<Cr>
+    imap <buffer><silent> <C-o> <Esc>:UniteClose<Cr>
+    imap <buffer><silent> <C-p> <Esc>:UniteClose<Cr>
 endfunction
 
 if executable('ag')
