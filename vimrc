@@ -662,13 +662,9 @@ call unite#custom#profile('default', 'context', {
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
+nnoremap <silent> <c-i> :Unite -auto-resize buffer source bookmark register history/yank<cr>
 nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
-" needs neomru
-"nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
-
 nnoremap <silent> <c-p> :Unite -auto-resize file_rec/async -default-action=split<cr>
-" needs neomru
-"nnoremap <silent> <c-p> :Unite -auto-resize file file_mru file_rec/async<cr>
 
 autocmd FileType unite call s:my_unite_settings()
 function! s:my_unite_settings()
