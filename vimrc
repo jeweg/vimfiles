@@ -31,95 +31,95 @@ let g:maplocalleader = 'm'
 " ---------------------------------------------------------------------------- 
 " Load plugins {{{
 
-if 1
+filetype off " Required for Vundle.
 
-    filetype off " Required for Vundle.
-
-    " set the runtime path to include Vundle and initialize
-    if s:is_windows
-        set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
-        call vundle#begin("$VIMRUNTIME/../bundle") 
-    else
-        set rtp+=~/.vim/unversioned/bundle/Vundle.vim
-        call vundle#begin('~/.vim/unversioned/bundle')
-    endif
-
-    " let Vundle manage Vundle. Required.
-    Plugin 'gmarik/Vundle.vim'
-
-    Plugin 'flazz/vim-colorschemes'
-    Plugin 'vim-scripts/twilight'
-    Plugin 'ciaranm/inkpot'
-    Plugin 'Lokaltog/vim-easymotion'
-    Plugin 'haya14busa/incsearch.vim'
-    Plugin 'moll/vim-bbye'
-    Plugin 'itchyny/lightline.vim'
-    Plugin 'mbbill/undotree'
-    Plugin 'ap/vim-css-color'
-    Plugin 'vim-scripts/sessionman.vim'
-    Plugin 'scrooloose/nerdcommenter'
-    Plugin 'vim-scripts/a.vim'
-    Plugin 'MarcWeber/vim-addon-mw-utils'
-    Plugin 'tomtom/tlib_vim'
-    Plugin 'EinfachToll/DidYouMean'
-    Plugin 'nielsmadan/harlequin'
-    Plugin 'szw/seoul256.vim'
-    Plugin 'tpope/vim-fugitive'
-    Plugin 'Shougo/vimproc.vim'
-    Plugin 'LeafCage/yankround.vim'
-    Plugin 'kshenoy/vim-sol'
-    Plugin 'freeo/vim-kalisi'
-    Plugin 'kien/rainbow_parentheses.vim'
-    Plugin 'mhinz/vim-startify'
-    Plugin 'terryma/vim-expand-region'
-    
-    "Plugin 'honza/vim-snippets'
-    Plugin 'SirVer/ultisnips'
-
-    "Plugin 'zhaocai/GoldenView.Vim'
-    Plugin 'spolu/dwm.vim'
-
-    Plugin 'Shougo/unite.vim'
-    Plugin 'Shougo/neomru.vim'
-    "Plugin 'kien/ctrlp.vim.git'
-    "Plugin 'sgur/ctrlp-extensions.vim'
-
-    if !s:is_windows
-        Plugin 'Valloric/YouCompleteMe'
-
-        " Couldn't get this to work on Windows
-        " even after it compiled successfully:
-        "Plugin 'JazzCore/ctrlp-cmatcher'
-    else
-        " So let's use this one on Windows instead:
-        "Plugin 'FelikZ/ctrlp-py-matcher' 
-    endif
-
-
-    " Tried at one time, not used atm for various reasons:
-    " Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
-    " Plugin 'godlygeek/tabular'
-    " Plugin 'Shougo/neocomplcache.vim'
-    " Plugin 'majutsushi/tagbar'
-    " Plugin 'scrooloose/syntastic'
-    " Plugin 'takac/vim-hardtime'
-    " Plugin 'blueyed/vim-diminactive' 
-    " Plugin 'scrooloose/nerdtree.git'
-    " Plugin 'Shougo/vimfiler.vim'
-    " Plugin 'myusuf3/numbers.vim'
-    " Plugin 'scrooloose/nerdtree.git'
-    " Plugin 'troydm/easytree.vim'
-    " Plugin 'tomtom/shymenu_vim'
-
-    call vundle#end()           
-
-    if s:is_windows
-        set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
-    endif
-
-    filetype plugin indent on    " required
-
+" set the runtime path to include Vundle and initialize
+if s:is_windows
+    set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
+    call vundle#begin("$VIMRUNTIME/../bundle") 
+else
+    set rtp+=~/.vim/unversioned/bundle/Vundle.vim
+    call vundle#begin('~/.vim/unversioned/bundle')
 endif
+
+" let Vundle manage Vundle. Required.
+Plugin 'gmarik/Vundle.vim'
+
+Plugin 'flazz/vim-colorschemes'
+Plugin 'vim-scripts/twilight'
+Plugin 'ciaranm/inkpot'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'moll/vim-bbye'
+Plugin 'itchyny/lightline.vim'
+Plugin 'mbbill/undotree'
+Plugin 'ap/vim-css-color'
+Plugin 'vim-scripts/sessionman.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'vim-scripts/a.vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'EinfachToll/DidYouMean'
+Plugin 'nielsmadan/harlequin'
+Plugin 'szw/seoul256.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'LeafCage/yankround.vim'
+Plugin 'kshenoy/vim-sol'
+Plugin 'freeo/vim-kalisi'
+Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'mhinz/vim-startify'
+Plugin 'terryma/vim-expand-region'
+
+"Plugin 'honza/vim-snippets'
+Plugin 'SirVer/ultisnips'
+
+"Plugin 'zhaocai/GoldenView.Vim'
+Plugin 'spolu/dwm.vim'
+
+Plugin 'Shougo/unite.vim'
+Plugin 'Shougo/neomru.vim'
+"Plugin 'kien/ctrlp.vim.git'
+"Plugin 'sgur/ctrlp-extensions.vim'
+
+if !s:is_windows
+    Plugin 'Valloric/YouCompleteMe'
+
+    " Couldn't get this to work on Windows
+    " even after it compiled successfully:
+    "Plugin 'JazzCore/ctrlp-cmatcher'
+else
+    " So let's use this one on Windows instead:
+    "Plugin 'FelikZ/ctrlp-py-matcher' 
+endif
+
+
+" Tried at one time, not used atm for various reasons:
+" Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
+" Plugin 'godlygeek/tabular'
+" Plugin 'Shougo/neocomplcache.vim'
+" Plugin 'majutsushi/tagbar'
+" Plugin 'scrooloose/syntastic'
+" Plugin 'takac/vim-hardtime'
+" Plugin 'blueyed/vim-diminactive' 
+" Plugin 'scrooloose/nerdtree.git'
+" Plugin 'Shougo/vimfiler.vim'
+" Plugin 'myusuf3/numbers.vim'
+" Plugin 'scrooloose/nerdtree.git'
+" Plugin 'troydm/easytree.vim'
+" Plugin 'tomtom/shymenu_vim'
+
+call vundle#end()           
+
+" Add my customizations to the rtp.
+if s:is_windows
+    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
+    set rtp+=$VIMRUNTIME/../vimfiles/rtp
+else
+    set rtp+=$HOME/.vim/rtp
+endif
+
+filetype plugin indent on    " required
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -755,7 +755,7 @@ endif
 set laststatus=2
 
 let g:lightline = {
-    \ 'colorscheme': 'default',
+    \ 'colorscheme': 'jw',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
     \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], [ 'fugitive' ] ]
