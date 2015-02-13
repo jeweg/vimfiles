@@ -1182,13 +1182,15 @@ inoremap <C-S> <Esc>:update<CR>
 " noremap <Shift-C-L> :set invnumber<CR>
 " noremap! <Shift-C-L> <Esc>:set invnumber<CR>
 
+" Toggle line numbers for all buffers.
+nmap <F1> :windo set nu!<Cr>
+
 
 " From http://stackoverflow.com/a/25887606:
 :autocmd CursorMoved * exe exists("HlUnderCursor")?HlUnderCursor?printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\')):'match none':""
 let HlUnderCursor=0
 noremap <silent> <F3> :exe "let HlUnderCursor=exists(\"HlUnderCursor\")?HlUnderCursor*-1+1:1"<CR>
 " TODO: see this http://www.vim.org/scripts/script.php?script_id=4306
-
 
 autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
 
