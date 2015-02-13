@@ -191,6 +191,7 @@ if &t_Co >= 256 || has("gui_running")
     hi DiffChange     term=bold ctermbg=24 guibg=#2B5B77
     hi DiffDelete     term=bold ctermfg=16 ctermbg=52 guifg=#40000A guibg=#700009
     hi DiffText       term=reverse cterm=reverse ctermfg=81 ctermbg=16 gui=reverse guifg=#8fbfdc guibg=#000000
+    hi NonText        guifg=#e8e8f7
     
 endif
 
@@ -282,17 +283,23 @@ set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 
-" Unbroken vertical split lines and neater folding look, plx.
-set fillchars=vert:\│,fold:·
+" Unbroken vertical split lines and neater folding look, if possible.
+if s:has_unicode_font
+    set fillchars=vert:\│,fold:—
+else
+    set fillchars=vert:\|,fold:-
+endif
+
 set foldmethod=marker
 set foldmarker={{{,}}}
 set foldcolumn=0
-set nofoldenable                  " Auto fold code
+set nofoldenable
+
 " From http://dhruvasagar.com/2013/03/28/vim-better-foldtext:
 function! NeatFoldText()
     let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
     let lines_count = v:foldend - v:foldstart + 1
-    let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
+    let lines_count_text = '< ' . printf("%10s", lines_count . ' lines') . ' >'
     let foldchar = matchstr(&fillchars, 'fold:\zs.')
     let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
     let foldtextend = lines_count_text . repeat(foldchar, 8)
@@ -300,7 +307,6 @@ function! NeatFoldText()
     return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
 endfunction
 set foldtext=NeatFoldText()
-
 
 " Show whitespace?
 set nolist
@@ -371,7 +377,7 @@ set showtabline=2
 set undolevels=1000
 set backspace=indent,eol,start
 
-autocmd FileType vim setlocal nonumber
+autocmd FileType vim,unite setlocal nonumber
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -1127,7 +1133,7 @@ if 1
     au Syntax * RainbowParenthesesLoadRound
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
-    nmap <leader>r :RainbowParenthesesToggle<Cr>
+    nmap <silent> <leader>r :RainbowParenthesesToggle<Cr>
 endif
 
 " }}}
@@ -1232,5 +1238,10 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
+
+" TODO:
+" replace map by noremap etc.
+" put autocommands in a group and clear it properly.
+" "=" (runs equalprg or c-indent) doesn't seem all that useful in comparison to something like clang-format. remap it?
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
