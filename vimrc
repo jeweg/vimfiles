@@ -64,7 +64,7 @@ let g:maplocalleader = 'm'
 
 "}}}
 " ---------------------------------------------------------------------------- 
-" Plugins (Managed) {{{
+" Plugins (Vundle-managed) {{{
 
 filetype off " Required for Vundle.
 
@@ -100,48 +100,42 @@ Plugin 'freeo/vim-kalisi'
 Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'mhinz/vim-startify'
 Plugin 'terryma/vim-expand-region'
-
-"Plugin 'honza/vim-snippets'
 Plugin 'SirVer/ultisnips'
-
-"Plugin 'zhaocai/GoldenView.Vim'
 Plugin 'spolu/dwm.vim'
-
-
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/neomru.vim'
-"Plugin 'kien/ctrlp.vim.git'
-"Plugin 'sgur/ctrlp-extensions.vim'
 
-if !s:is_windows
-    Plugin 'Valloric/YouCompleteMe'
-    
-    " Couldn't get this to work on Windows
-    " even after it compiled successfully:
-    "Plugin 'JazzCore/ctrlp-cmatcher'
-else
-    " So let's use this one on Windows instead:
-    " Update: this always had problems, too.
-    "Plugin 'FelikZ/ctrlp-py-matcher' 
-
+if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
+else
+    " On Windows, use a precompiled version of Ycm
+    " that's not version-controlled by vundle.
+    Plugin 'Valloric/YouCompleteMe'
 endif
 
-
-" Tried at one time, not used atm for various reasons:
-" Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
-" Plugin 'godlygeek/tabular'
-" Plugin 'Shougo/neocomplcache.vim'
-" Plugin 'majutsushi/tagbar'
-" Plugin 'scrooloose/syntastic'
-" Plugin 'takac/vim-hardtime'
-" Plugin 'blueyed/vim-diminactive' 
-" Plugin 'scrooloose/nerdtree.git'
-" Plugin 'Shougo/vimfiler.vim'
+" Plugins worth checking out again:
+" Plugin 'Shougo/vimfiler.vim' 
 " Plugin 'myusuf3/numbers.vim'
-" Plugin 'scrooloose/nerdtree.git'
-" Plugin 'troydm/easytree.vim'
 " Plugin 'tomtom/shymenu_vim'
+" Plugin 'godlygeek/tabular'
+" Plugin 'Shougo/neossh.vim'
+"
+" Plugins I've tried in the past, but dropped again for various reasons:
+"
+" Plugin 'zhaocai/GoldenView.Vim' < Seems to make a mess of my windows.
+" Plugin 'kien/ctrlp.vim.git' < Tried hard to like it, but slow and awkward matching sometimes.
+" Plugin 'sgur/ctrlp-extensions.vim' < See above.
+" Plugin 'JazzCore/ctrlp-cmatcher' < Attempt to fix matcher on Linux. Worked better. Couldn't get working on Windows.
+" Plugin 'FelikZ/ctrlp-py-matcher' < Attempt to fix matcher on Windows. Seemed buggy.
+" Plugin 'honza/vim-snippets' < I prefer to add snippets selectively.
+" Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
+" Plugin 'Shougo/neocomplcache.vim' < Replaced by Ycm.
+" Plugin 'majutsushi/tagbar' < Replaced by Ycm.
+" Plugin 'scrooloose/syntastic' < Replaced by Ycm. Might not be a 100% replacement, maybe revisit later.
+" Plugin 'takac/vim-hardtime' < Too restrictive.
+" Plugin 'blueyed/vim-diminactive' < Gave me problems. Can't remember details.
+" Plugin 'scrooloose/nerdtree.git' < I don't feel the need for tree views at the  moment.
+" Plugin 'troydm/easytree.vim' < See nerdtree.
 
 call vundle#end()           
 
