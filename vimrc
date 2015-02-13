@@ -4,6 +4,8 @@
 
 set nocompatible
 
+let s:hostname = substitute(system('hostname'), '\n', '', '')
+
 " Platform detection
 let s:is_windows = has('win16') || has('win32') || has('win64')
 let s:is_cygwin = has('win32unix')
@@ -29,6 +31,23 @@ else
 endif
 let s:manual_plugins_dir = s:vimfiles_dir . '/plugins'
 
+" We need a way to tell if we have access to patched fonts.
+" Unfortunately, there doesn't seem to be a way to find the actually used
+" font. We use a variable here and heuristics. If we figure out better ways,
+" we set the variable accordingly. All respective logic uses the variable.
+let s:has_patched_font = 0
+if has('gui_running') && !s:is_windows
+    " At the moment the patched fonts just don't look nice enough on Windows.
+    let s:has_patched_font = 1
+endif
+" Systems I know are patched.
+if s:hostname == "bravuntu"
+    let s:has_patched_font = 1
+endif
+
+" Any unicode font available?
+let s:has_unicode_font = 1
+
 " Set augroup.
 augroup MyAutoCmd
     autocmd!
@@ -44,14 +63,9 @@ let g:maplocalleader = 'm'
 
 filetype off " Required for Vundle.
 
-" set the runtime path to include Vundle and initialize
-if s:is_windows
-    set rtp+=$VIMRUNTIME/../bundle/Vundle.vim
-    call vundle#begin("$VIMRUNTIME/../bundle") 
-else
-    set rtp+=~/.vim/unversioned/bundle/Vundle.vim
-    call vundle#begin('~/.vim/unversioned/bundle')
-endif
+" Set the runtime path to include Vundle and initialize
+execute 'set rtp+='.s:vundle_plugins_dir.'/Vundle.vim'
+call vundle#begin(s:vundle_plugins_dir)
 
 " let Vundle manage Vundle. Required.
 Plugin 'gmarik/Vundle.vim'
@@ -126,20 +140,21 @@ endif
 
 call vundle#end()           
 
-" Add my customizations to the rtp.
-if s:is_windows
-    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
-    set rtp+=$VIMRUNTIME/../vimfiles/rtp
-else
-    set rtp+=$HOME/.vim/rtp
-endif
-
-filetype plugin indent on    " required
+filetype plugin indent on " Required
 
 " }}}
 " ---------------------------------------------------------------------------- 
 " Plugins (Manual) {{{
 
+" A Windows-specific extra plugin.
+if s:is_windows
+    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
+endif
+
+" Find and import manual plugins.
+for s:dir in filter(split(globpath(s:manual_plugins_dir, '*'), '\n'), 'isdirectory(v:val)')
+    execute 'set rtp+='.s:dir
+endfor
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -160,21 +175,11 @@ endif
 
 set background=dark
 if &t_Co >= 256 || has("gui_running")
-
-    " Candidates I choose not to use right now.
-    "colorscheme jellybeans
-    "colorscheme codeschool
-    "colorscheme coffee
-    "colorscheme peaksea
-    "colorscheme molokai
-    "colorscheme monokai
-    "colorscheme inkpot
-    "colorscheme railscasts
-    "colorscheme gruvbox
     
     colorscheme solarized
+    
     " Solarized is fine, but there are some details I don't like.
-    " It is designed so nothing stands out too much, but in practice, I'd like some
+    " First of all, it is designed so nothing stands out too much, but in practice, I'd like some
     " things to stand out, like the diff changes and folded regions.
 
     " No underlines and brighter fg color (See http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim).
@@ -189,24 +194,6 @@ if &t_Co >= 256 || has("gui_running")
     hi DiffText       term=reverse cterm=reverse ctermfg=81 ctermbg=16 gui=reverse guifg=#8fbfdc guibg=#000000
     
 endif
-    
-" We need a way to tell if we have access to patched fonts.
-" Unfortunately, there doesn't seem to be a way to find the actually used
-" font. We use a variable here and heuristics. If we figure out better ways,
-" we set the variable accordingly. All respective logic uses the variable.
-let s:has_patched_font = 0
-if has('gui_running') && !s:is_windows
-    " At the moment the patched fonts just don't look nice enough on Windows.
-    let s:has_patched_font = 1
-endif
-let hostname = substitute(system('hostname'), '\n', '', '')
-if hostname == "bravuntu"
-    let s:has_patched_font = 1
-endif
-
-" We make whether we use normal (unpatched) unicode font features depend on
-" this variable. 
-let s:has_unicode_font = 1
 
 if has('gui_running')
     set guioptions-=T           " Remove the toolbar
@@ -232,6 +219,8 @@ set guitablabel=\[%N\]\ %t\ %M
 " Set the language for gvim's menus and more.
 set langmenu=en_US
 let $LANG = 'en_US'
+" This re-initializes parts of GVim so the removed elements
+" actually go away.
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
@@ -344,17 +333,11 @@ else
   set clipboard& clipboard+=unnamed
 endif
 
-" temp dirs.
-if s:is_windows
-    let s:tmp_dir = expand('$VIM/tmp')
-else
-    let s:tmp_dir = expand('$HOME/.vim/unversioned/tmp')
-endif
-let &backupdir=s:tmp_dir
-let &viewdir=s:tmp_dir
-let &directory=s:tmp_dir
-let &undodir=s:tmp_dir
-let g:yankring_history_dir = s:tmp_dir
+let &backupdir = s:temp_dir
+let &viewdir = s:temp_dir
+let &directory = s:temp_dir
+let &undodir = s:temp_dir
+let g:yankring_history_dir = s:temp_dir
 
 set noautochdir
 
