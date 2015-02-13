@@ -75,8 +75,7 @@ Plugin 'terryma/vim-expand-region'
 Plugin 'SirVer/ultisnips'
 
 "Plugin 'zhaocai/GoldenView.Vim'
-"Plugin 'spolu/dwm.vim'
-Plugin 'dang/dwm.vim'
+Plugin 'spolu/dwm.vim'
 
 
 Plugin 'Shougo/unite.vim'
