@@ -652,7 +652,7 @@ endif
 " Unite {{{
 if 1
 
-let g:unite_data_directory = s:tmp_dir
+let g:unite_data_directory = s:temp_dir
 let g:unite_source_history_yank_enable = 1
 if s:has_unicode_font
     let g:unite_prompt = '► '
