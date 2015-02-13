@@ -31,6 +31,11 @@ else
 endif
 let s:manual_plugins_dir = s:vimfiles_dir . '/plugins'
 
+let s:vimfiles_dir = expand(s:vimfiles_dir)
+let s:manual_plugins_dir = expand(s:manual_plugins_dir)
+let s:vundle_plugins_dir = expand(s:vundle_plugins_dir)
+let s:temp_dir = expand(s:temp_dir)
+
 " We need a way to tell if we have access to patched fonts.
 " Unfortunately, there doesn't seem to be a way to find the actually used
 " font. We use a variable here and heuristics. If we figure out better ways,
@@ -1139,6 +1144,8 @@ endif
 if 1
     "TODO: doesn't work yet. Figure it out.
     "autocmd BufNew "" Startify
+    
+    nnoremap <silent> <F1> :Startify<Cr> 
 endif
 
 " }}}
@@ -1198,7 +1205,7 @@ inoremap <C-S> <Esc>:update<CR>
 " noremap <Shift-C-L> :set invnumber<CR>
 " noremap! <Shift-C-L> <Esc>:set invnumber<CR>
 
-nnoremap <silent> <F1> :set nu!<Cr>
+nnoremap <silent> <F2> :set nu!<Cr>
 
 
 " From http://stackoverflow.com/a/25887606:
