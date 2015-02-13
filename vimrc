@@ -1,9 +1,10 @@
 " My vimrc. Jens Weggemann <jensweh@gmail.com>
 " ---------------------------------------------------------------------------- 
-" Very general stuff {{{
+" General setup {{{
 
 set nocompatible
 
+" Platform detection
 let s:is_windows = has('win16') || has('win32') || has('win64')
 let s:is_cygwin = has('win32unix')
 let s:is_mac = !s:is_windows && !s:is_cygwin
@@ -11,12 +12,22 @@ let s:is_mac = !s:is_windows && !s:is_cygwin
       \   (!executable('xdg-open') &&
       \     system('uname') =~? '^darwin'))
 
+" Normally we would set shellshash on Windows to have unified
+" path separators.
+" However, this has the side effect of also changing the behaviour
+" of shellescape to use single quotes which Windows cannot handle.
+set noshellslash
+
 if s:is_windows
-    " Exchange path separator.
-    " Meh.. setting this also changes the behaviour of shellescape to use
-    " single quotes which Windows cannot handle.
-    set noshellslash
+    let s:vimfiles_dir = '$VIMRUNTIME/../vimfiles'
+    let s:vundle_plugins_dir = '$VIMRUNTIME/../bundle'
+    let s:temp_dir = '$VIMRUNTIME/../tmp'
+else
+    let s:vimfiles_dir = '~/.vim'
+    let s:vundle_plugins_dir = '~/.vim/unversioned/bundle'
+    let s:temp_dir = '~/.vim/unversioned/tmp'
 endif
+let s:manual_plugins_dir = s:vimfiles_dir . '/plugins'
 
 " Set augroup.
 augroup MyAutoCmd
@@ -29,7 +40,7 @@ let g:maplocalleader = 'm'
 
 "}}}
 " ---------------------------------------------------------------------------- 
-" Load plugins {{{
+" Plugins (Managed) {{{
 
 filetype off " Required for Vundle.
 
@@ -124,6 +135,11 @@ else
 endif
 
 filetype plugin indent on    " required
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" Plugins (Manual) {{{
+
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -1148,6 +1164,15 @@ endif
 " https://github.com/terryma/vim-expand-region
 
 if 1
+endif
+
+" }}}
+" ---------------------------------------------------------------------------- 
+" visual_studio.vim {{{
+" https://github.com/lorry-lee/visual_studio.vim
+
+if 1
+    nnoremap <F5> :call DTEBuildStartupProject()<Cr>
 endif
 
 " }}}
