@@ -75,7 +75,9 @@ Plugin 'terryma/vim-expand-region'
 Plugin 'SirVer/ultisnips'
 
 "Plugin 'zhaocai/GoldenView.Vim'
-Plugin 'spolu/dwm.vim'
+"Plugin 'spolu/dwm.vim'
+Plugin 'dang/dwm.vim'
+
 
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/neomru.vim'
@@ -84,13 +86,16 @@ Plugin 'Shougo/neomru.vim'
 
 if !s:is_windows
     Plugin 'Valloric/YouCompleteMe'
-
+    
     " Couldn't get this to work on Windows
     " even after it compiled successfully:
     "Plugin 'JazzCore/ctrlp-cmatcher'
 else
     " So let's use this one on Windows instead:
+    " Update: this always had problems, too.
     "Plugin 'FelikZ/ctrlp-py-matcher' 
+
+    Plugin 'lorry-lee/visual_studio.vim'
 endif
 
 
@@ -217,7 +222,11 @@ source $VIMRUNTIME/menu.vim
 
 set tabpagemax=99
 set noshowmode
-set cursorline
+
+" Highlight current line only in the current window.
+set nocursorline
+autocmd WinEnter * setlocal cursorline
+autocmd WinLeave * setlocal nocursorline
 
 highlight clear SignColumn
 "highlight clear LineNr
@@ -1182,8 +1191,7 @@ inoremap <C-S> <Esc>:update<CR>
 " noremap <Shift-C-L> :set invnumber<CR>
 " noremap! <Shift-C-L> <Esc>:set invnumber<CR>
 
-" Toggle line numbers for all buffers.
-nmap <F1> :windo set nu!<Cr>
+nnoremap <silent> <F1> :set nu!<Cr>
 
 
 " From http://stackoverflow.com/a/25887606:
