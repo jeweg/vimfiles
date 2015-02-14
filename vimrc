@@ -1,6 +1,5 @@
 " My vimrc. Jens Weggemann <jensweh@gmail.com>
-" ---------------------------------------------------------------------------- 
-" General setup {{{
+" General setup ------------------------------------------------------{{{
 
 set nocompatible
 
@@ -63,8 +62,7 @@ let g:mapleader = ','
 let g:maplocalleader = 'm'
 
 "}}}
-" ---------------------------------------------------------------------------- 
-" Plugins (Vundle-managed) {{{
+" Plugins (Vundle-managed) -------------------------------------------{{{
 
 filetype off " Required for Vundle.
 
@@ -142,8 +140,7 @@ call vundle#end()
 filetype plugin indent on " Required
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Plugins (Manual) {{{
+" Plugins (Manual) ---------------------------------------------------{{{
 
 " A Windows-specific extra plugin.
 if s:is_windows
@@ -156,8 +153,7 @@ for s:dir in filter(split(globpath(s:manual_plugins_dir, '*'), '\n'), 'isdirecto
 endfor
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Appearance and GUI {{{
+" Appearance and GUI -------------------------------------------------{{{
 
 " This is a tip from
 " https://github.com/itchyny/lightline.vim/blob/master/doc/lightline.txt.
@@ -238,8 +234,7 @@ highlight clear SignColumn
 "highlight clear LineNr
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Settings {{{
+" Settings -----------------------------------------------------------{{{
 
 set encoding=utf-8
 scriptencoding utf-8
@@ -388,8 +383,7 @@ augroup augroup_jw
 augroup END
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Restore cursor when re-entering window {{{
+" Restore cursor when re-entering window -----------------------------{{{
 
 function! ResCur()
     if line("'\"") <= line("$")
@@ -402,8 +396,7 @@ augroup augroup_jw
 augroup END
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Diff mode {{{
+" Diff mode ----------------------------------------------------------{{{
 
 set diffopt=filler,vertical
 if &diff
@@ -420,8 +413,7 @@ if &diff
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Window pos/size restoring {{{
+" Window pos/size restoring ------------------------------------------{{{
 " From http://vim.wikia.com/wiki/Restore_screen_size_and_position
 
 " To enable the saving and restoring of screen positions.
@@ -499,8 +491,7 @@ if has("gui_running")
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" easymotion {{{
+" easymotion ---------------------------------------------------------{{{
 " https://github.com/Lokaltog/vim-easymotion
 " http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/
 
@@ -509,8 +500,7 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nnoremap <SPACE> <Plug>(easymotion-s2)
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" incsearch {{{
+" incsearch ----------------------------------------------------------{{{
 " https://github.com/haya14busa/incsearch.vim
 
 if 1
@@ -520,8 +510,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" CtrlP {{{
+" CtrlP --------------------------------------------------------------{{{
 " https://github.com/kien/ctrlp.vim
 
 " Okay, I officially don't like the default matching.
@@ -664,8 +653,7 @@ if 0
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Unite {{{
+" Unite --------------------------------------------------------------{{{
 if 1
 
     let g:unite_data_directory = s:temp_dir
@@ -732,8 +720,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" lightline {{{
+" lightline ----------------------------------------------------------{{{
 
 set laststatus=2
 
@@ -900,8 +887,7 @@ else
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" UndoTree {{{
+" UndoTree -----------------------------------------------------------{{{
 
 if 1
     nnoremap <Leader>u :UndotreeToggle<CR>
@@ -910,8 +896,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Syntastic {{{
+" Syntastic ----------------------------------------------------------{{{
 " https://github.com/scrooloose/syntastic/blob/master/doc/syntastic.txt
 
 if 0
@@ -931,8 +916,7 @@ if 0
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" bbye {{{
+" bbye ---------------------------------------------------------------{{{
 " https://github.com/moll/vim-bbye
 
 if 1
@@ -944,8 +928,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" dwm {{{
+" dwm ----------------------------------------------------------------{{{
 " https://github.com/spolu/dwm.vim
 
 if 1
@@ -967,8 +950,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" GoldenView {{{
+" GoldenView ---------------------------------------------------------{{{
 " http://zhaocai.github.io/GoldenView.Vim/
 
 if 0
@@ -989,8 +971,7 @@ if 0
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" YouCompleteMe {{{
+" YouCompleteMe ------------------------------------------------------{{{
 " https://github.com/Valloric/YouCompleteMe
 " http://stackoverflow.com/a/24520161 
 
@@ -1045,8 +1026,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" SnipMate {{{
+" SnipMate -----------------------------------------------------------{{{
 " https://github.com/msanders/snipmate.vim/blob/master/doc/snipMate.txt
 
 if 0
@@ -1054,8 +1034,7 @@ if 0
     smap <C-h> <Plug>snipMateNextOrTrigger
 endif
 " }}}
-" ---------------------------------------------------------------------------- 
-" UltiSnips {{{
+" UltiSnips ----------------------------------------------------------{{{
 " https://github.com/SirVer/ultisnips
 
 if 1
@@ -1076,16 +1055,14 @@ if 1
     endif    
 endif
 " }}}
-" ---------------------------------------------------------------------------- 
-" fugitive {{{
+" fugitive -----------------------------------------------------------{{{
 " TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
 " and http://mislav.uniqpath.com/2014/02/hidden-documentation/
 
 " No customizations here yet.
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Yankround {{{
+" Yankround ----------------------------------------------------------{{{
 
 if 0
     nmap p <Plug>(yankround-p)
@@ -1095,8 +1072,7 @@ if 0
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Rainbow parentheses {{{
+" Rainbow parentheses ------------------------------------------------{{{
 " https://github.com/kien/rainbow_parentheses.vim
 
 if 1
@@ -1107,8 +1083,7 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Startify {{{
+" Startify -----------------------------------------------------------{{{
 " https://github.com/mhinz/vim-startify
 
 if 1
@@ -1119,16 +1094,14 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Expand-Region {{{
+" Expand-Region ------------------------------------------------------{{{
 " https://github.com/terryma/vim-expand-region
 
 if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" visual_studio.vim {{{
+" visual_studio.vim --------------------------------------------------{{{
 " https://github.com/lorry-lee/visual_studio.vim
 
 if 1
@@ -1136,15 +1109,13 @@ if 1
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Better Python syntax highlighting {{{
+" Better Python syntax highlighting ----------------------------------{{{
 " https://github.com/hdima/python-syntax
 
 let python_highlight_all = 1
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" General key mappings {{{
+" General key mappings -----------------------------------------------{{{
 
 nnoremap <silent> <leader>/ :set invhlsearch<CR>
 
@@ -1191,8 +1162,7 @@ augroup augroup_jw
 augroup END
 
 " }}}
-" ---------------------------------------------------------------------------- 
-" Demo mode {{{
+" Demo mode ----------------------------------------------------------{{{
 " Enable to get a look better suited to presentations/projectors:
 
 if 0
@@ -1211,6 +1181,5 @@ if 0
 endif
 
 " }}}
-" ---------------------------------------------------------------------------- 
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
