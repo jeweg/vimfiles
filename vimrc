@@ -53,8 +53,8 @@ endif
 " Any unicode font available?
 let s:has_unicode_font = 1
 
-" Set augroup.
-augroup MyAutoCmd
+" Clear augroup.
+augroup augroup_jw
     autocmd!
 augroup END
 
@@ -229,8 +229,10 @@ set noshowmode
 
 " Highlight current line only in the current window.
 set nocursorline
-autocmd WinEnter * setlocal cursorline
-autocmd WinLeave * setlocal nocursorline
+augroup augroup_jw
+    autocmd WinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+augroup END
 
 highlight clear SignColumn
 "highlight clear LineNr
@@ -319,7 +321,9 @@ set modelines=1
 set autoindent                  " Indent at the same level of the previous line
 set expandtab                   " Tabs are spaces, not tabs
 set nosmartindent               " smartindent sucks for anything but C-like languages.
-autocmd FileType c,cpp,cs,objc setlocal smartindent
+augroup augroup_jw
+    autocmd FileType c,cpp,cs,objc setlocal smartindent
+augroup END
 set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
 set shiftwidth=4                " Use indents of 4 spaces
@@ -362,7 +366,9 @@ set showmatch
 " Disable visual and audio flash.
 " See http://vim.wikia.com/wiki/Disable_beeping#Disable_beep_and_flash_with_an_autocmd
 set noerrorbells visualbell t_vb=
-autocmd GUIEnter * set visualbell t_vb=
+augroup augroup_jw
+    autocmd GUIEnter * set visualbell t_vb=
+augroup END
 
 set hlsearch
 set smartcase
@@ -377,7 +383,9 @@ set showtabline=2
 set undolevels=1000
 set backspace=indent,eol,start
 
-autocmd FileType vim,unite setlocal nonumber
+augroup augroup_jw
+    autocmd FileType vim,unite setlocal nonumber
+augroup END
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -389,8 +397,7 @@ function! ResCur()
         return 1
     endif
 endfunction
-augroup resCur
-    autocmd!
+augroup augroup_jw
     autocmd BufWinEnter * call ResCur()
 augroup END
 
@@ -402,10 +409,12 @@ set diffopt=filler,vertical
 if &diff
     
     " Faster navigation between differences.
-    map <C-Up> [c
-    map <C-Down> ]c
+    nnoremap <C-Up> [c
+    nnoremap <C-Down> ]c
     
-    autocmd VimResized * wincmd =
+    augroup augroup_jw
+        autocmd VimResized * wincmd =
+    augroup END
         
     " Also see the diff-mode modification in ScreenRestore() below.
 endif
@@ -424,67 +433,69 @@ let g:screen_size_restore_pos = 1
 let g:screen_size_by_vim_instance = 0
 
 if has("gui_running")
-  function! ScreenFilename()
-    if has('amiga')
-      return "s:.vimsize"
-    elseif has('win32')
-      return $HOME.'\_vimsize'
-    else
-      return $HOME.'/.vimsize'
-    endif
-  endfunction
-
-  function! ScreenRestore()
-    " Restore window size (columns and lines) and position
-    " from values stored in vimsize file.
-    " Must set font first so columns and lines are based on font size.
-    let f = ScreenFilename()
-    if has("gui_running") && g:screen_size_restore_pos && filereadable(f)
-      let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
-      for line in readfile(f)
-        let sizepos = split(line)
-        if len(sizepos) == 5 && sizepos[0] == vim_instance
-          silent! execute "set columns=".sizepos[1]." lines=".sizepos[2]
-          silent! execute "winpos ".sizepos[3]." ".sizepos[4]
-          
-          if &diff
-              " In diff mode, we want to start with equal sized windows.
-              wincmd =
-          endif
-          
-          return
+    function! ScreenFilename()
+        if has('amiga')
+            return "s:.vimsize"
+        elseif has('win32')
+            return $HOME.'\_vimsize'
+        else
+            return $HOME.'/.vimsize'
         endif
-      endfor
-    endif
-  endfunction
+    endfunction
 
-  function! ScreenSave()
-    " Save window size and position.
-    if has("gui_running") && g:screen_size_restore_pos
-      let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
-      let data = vim_instance . ' ' . &columns . ' ' . &lines . ' ' .
-            \ (getwinposx()<0?0:getwinposx()) . ' ' .
-            \ (getwinposy()<0?0:getwinposy())
-      let f = ScreenFilename()
-      if filereadable(f)
-        let lines = readfile(f)
-        call filter(lines, "v:val !~ '^" . vim_instance . "\\>'")
-        call add(lines, data)
-      else
-        let lines = [data]
-      endif
-      call writefile(lines, f)
-    endif
-  endfunction
+    function! ScreenRestore()
+        " Restore window size (columns and lines) and position
+        " from values stored in vimsize file.
+        " Must set font first so columns and lines are based on font size.
+        let f = ScreenFilename()
+        if has("gui_running") && g:screen_size_restore_pos && filereadable(f)
+            let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
+            for line in readfile(f)
+                let sizepos = split(line)
+                if len(sizepos) == 5 && sizepos[0] == vim_instance
+                    silent! execute "set columns=".sizepos[1]." lines=".sizepos[2]
+                    silent! execute "winpos ".sizepos[3]." ".sizepos[4]
 
-  if !exists('g:screen_size_restore_pos')
-    let g:screen_size_restore_pos = 1
-  endif
-  if !exists('g:screen_size_by_vim_instance')
-    let g:screen_size_by_vim_instance = 1
-  endif
-  autocmd VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
-  autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
+                    if &diff
+                        " In diff mode, we want to start with equal sized windows.
+                        wincmd =
+                    endif
+
+                    return
+                endif
+            endfor
+        endif
+    endfunction
+
+    function! ScreenSave()
+        " Save window size and position.
+        if has("gui_running") && g:screen_size_restore_pos
+            let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
+            let data = vim_instance . ' ' . &columns . ' ' . &lines . ' ' .
+                        \ (getwinposx()<0?0:getwinposx()) . ' ' .
+                        \ (getwinposy()<0?0:getwinposy())
+            let f = ScreenFilename()
+            if filereadable(f)
+                let lines = readfile(f)
+                call filter(lines, "v:val !~ '^" . vim_instance . "\\>'")
+                call add(lines, data)
+            else
+                let lines = [data]
+            endif
+            call writefile(lines, f)
+        endif
+    endfunction
+
+    if !exists('g:screen_size_restore_pos')
+        let g:screen_size_restore_pos = 1
+    endif
+    if !exists('g:screen_size_by_vim_instance')
+        let g:screen_size_by_vim_instance = 1
+    endif
+    augroup augroup_jw
+        autocmd VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
+        autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
+    augroup END
 endif
 
 " }}}
@@ -495,7 +506,7 @@ endif
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-map <SPACE> <Plug>(easymotion-s2)
+nnoremap <SPACE> <Plug>(easymotion-s2)
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -608,8 +619,8 @@ if 0
     let g:ctrlp_map = '<c-p>'
     let g:ctrlp_cmd = 'CtrlP'
 
-    map <C-O> :CtrlPMixed<CR>
-    map <C-P> :CtrlPMenu<CR>
+    nnoremap <C-O> :CtrlPMixed<CR>
+    nnoremap <C-P> :CtrlPMenu<CR>
 
     let g:ctrlp_yankring_disable = 1
 
@@ -657,106 +668,66 @@ endif
 " Unite {{{
 if 1
 
-let g:unite_data_directory = s:temp_dir
-let g:unite_source_history_yank_enable = 1
-if s:has_unicode_font
-    let g:unite_prompt = '► '
-else
-    let g:unite_prompt = '>> '
-endif
+    let g:unite_data_directory = s:temp_dir
+    let g:unite_source_history_yank_enable = 1
+    if s:has_unicode_font
+        let g:unite_prompt = '► '
+    else
+        let g:unite_prompt = '>> '
+    endif
 
-call unite#custom#profile('default', 'context', {
-\   'start_insert': 1,
-\   'winheight': 10,
-\   'direction': 'botright',
-\ })
+    call unite#custom#profile('default', 'context', {
+    \   'start_insert': 1,
+    \   'winheight': 10,
+    \   'direction': 'botright',
+    \ })
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
+    call unite#filters#matcher_default#use(['matcher_fuzzy'])
+    call unite#filters#sorter_default#use(['sorter_rank'])
 
-nnoremap <silent> <c-i> :Unite -auto-resize buffer source bookmark register history/yank<cr>
-nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
-nnoremap <silent> <c-p> :Unite -auto-resize file_rec/async -default-action=split<cr>
+    nnoremap <silent> <c-i> :Unite -auto-resize buffer source bookmark register history/yank<cr>
+    nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
+    nnoremap <silent> <c-p> :Unite -auto-resize file_rec/async -default-action=split<cr>
 
-autocmd FileType unite call s:my_unite_settings()
-function! s:my_unite_settings()
+    augroup augroup_jw
+        autocmd FileType unite call s:my_unite_settings()
+    augroup END
+    function! s:my_unite_settings()
 
-    nmap <buffer> <C-j>   <Plug>(unite_select_next_line)
-    imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-    nmap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-    imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-    nmap <buffer> a <Plug>(unite_choose_action)
-    
-    " Shorten path one part
-    imap <buffer> <C-h> <Plug>(unite_delete_backward_path)
-    
-    nmap <buffer><silent> <C-i> :UniteClose<Cr>
-    nmap <buffer><silent> <C-o> :UniteClose<Cr>
-    nmap <buffer><silent> <C-p> :UniteClose<Cr>
-    imap <buffer><silent> <C-i> <Esc>:UniteClose<Cr>
-    imap <buffer><silent> <C-o> <Esc>:UniteClose<Cr>
-    imap <buffer><silent> <C-p> <Esc>:UniteClose<Cr>
-endfunction
+        nmap <buffer> <C-j>   <Plug>(unite_select_next_line)
+        imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+        nmap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+        imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+        nmap <buffer> a <Plug>(unite_choose_action)
+        
+        " Shorten path one part
+        imap <buffer> <C-h> <Plug>(unite_delete_backward_path)
+        
+        nmap <buffer><silent> <C-i> :UniteClose<Cr>
+        nmap <buffer><silent> <C-o> :UniteClose<Cr>
+        nmap <buffer><silent> <C-p> :UniteClose<Cr>
+        imap <buffer><silent> <C-i> <Esc>:UniteClose<Cr>
+        imap <buffer><silent> <C-o> <Esc>:UniteClose<Cr>
+        imap <buffer><silent> <C-p> <Esc>:UniteClose<Cr>
+    endfunction
 
-if executable('ag')
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_recursive_opt = ''    
-    let g:unite_source_grep_default_opts = '-i --nocolor --nogroup --hidden -S -C4
-          \ --ignore .git
-          \ --ignore .svn
-          \ --ignore .hg
-          \ --ignore CVS
-          \ --ignore .DS_Store
-          \ --ignore "**/*.exe"
-          \ --ignore "**/*.so"
-          \ --ignore "**/*.dll"
-          \ --ignore "**/*.pyc"
-          \ --ignore "**/*~"
-          \ -g ""'
-    let g:unite_source_rec_async_command = 'ag '.g:unite_source_grep_default_opts
-endif
-
-
-
-if 0
-
-" From the top comment at http://bling.github.io/blog/2013/06/02/unite-dot-vim-the-plugin-you-didnt-know-you-need/
-"
-let g:unite_source_history_yank_enable = 1
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-"
-"nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
-"nnoremap <leader>ff :<C-u>Unite -no-split -buffer-name=files   -start-insert file<cr>
-"nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru     -start-insert file_mru<cr>
-"nnoremap <leader>o :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<cr>
-"nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank    history/yank<cr>
-"nnoremap <leader>e :<C-u>Unite -no-split -buffer-name=buffer  buffer<cr>
-
-"nnoremap <leader>ft :Unite file_rec/async -default-action=tabopen
-"nnoremap <leader>fs :Unite file_rec/async -default-action=split
-"nnoremap <leader>fv :Unite file_rec/async -default-action=vsplit
-"nnoremap <leader>fc :Unite file_rec/async
-
-" Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-  " Play nice with supertab
-  let b:SuperTabDisabled=1
-  " Enable navigation with control-j and control-k in insert mode
-  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-endfunction
-if executable('jvgrep')
-    let g:unite_source_grep_command = 'jvgrep'
-    let g:unite_source_grep_default_opts = '-i --exclude ''\.(git|svn|hg|bzr)'''
-    let g:unite_source_grep_recursive_opt = '-R'
-endif
-if executable('ack-grep')
-    let g:unite_source_grep_command = 'ack-grep'
-    let g:unite_source_grep_default_opts = '-i --no-heading --no-color -k -H'
-    let g:unite_source_grep_recursive_opt = ''
-endif
-endif
+    if executable('ag')
+        let g:unite_source_grep_command = 'ag'
+        let g:unite_source_grep_recursive_opt = ''    
+        let g:unite_source_grep_default_opts = '-i --nocolor --nogroup --hidden -S -C4
+              \ --ignore .git
+              \ --ignore .svn
+              \ --ignore .hg
+              \ --ignore CVS
+              \ --ignore .DS_Store
+              \ --ignore "**/*.exe"
+              \ --ignore "**/*.so"
+              \ --ignore "**/*.dll"
+              \ --ignore "**/*.pyc"
+              \ --ignore "**/*~"
+              \ -g ""'
+        let g:unite_source_rec_async_command = 'ag '.g:unite_source_grep_default_opts
+    endif
 
 endif
 
@@ -950,9 +921,8 @@ if 0
     " let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_stl_format = '%E{E %fe #%e}%B{, }%W{W %fw #%w}'
 
-    augroup AutoSyntastic
-      autocmd!
-      autocmd BufWritePost *.c,*.cpp,*.py call s:syntastic()
+    augroup augroup_jw
+        autocmd BufWritePost *.c,*.cpp,*.py call s:syntastic()
     augroup END
     function! s:syntastic()
       SyntasticCheck
@@ -1133,7 +1103,7 @@ if 1
     au Syntax * RainbowParenthesesLoadRound
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
-    nmap <silent> <leader>r :RainbowParenthesesToggle<Cr>
+    nnoremap <silent> <leader>r :RainbowParenthesesToggle<Cr>
 endif
 
 " }}}
@@ -1176,10 +1146,10 @@ let python_highlight_all = 1
 " ---------------------------------------------------------------------------- 
 " General key mappings {{{
 
-nmap <silent> <leader>/ :set invhlsearch<CR>
+nnoremap <silent> <leader>/ :set invhlsearch<CR>
 
 " For when you forget to sudo.. Really Write the file.
-cmap w!! w !sudo tee % >/dev/null
+cnoremap w!! w !sudo tee % >/dev/null
 
 " Visual shifting (does not exit Visual mode)
 vnoremap < <gv
@@ -1190,11 +1160,11 @@ vnoremap > >gv
 vnoremap . :normal .<CR>
 
 " Find merge conflict markers
-map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+noremap <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
 " Ctrl-S saves. This might not work in a terminal Vim.
 noremap <C-S> <Esc>:update<CR>
-inoremap <C-S> <Esc>:update<CR>
+inoremap <C-S> <Esc>:update<CR>a
 
 " nnoremap <Tab> <C-j>
 " nnoremap <S-Tab> <C-k>
@@ -1209,12 +1179,16 @@ nnoremap <silent> <F2> :set nu!<Cr>
 
 
 " From http://stackoverflow.com/a/25887606:
-:autocmd CursorMoved * exe exists("HlUnderCursor")?HlUnderCursor?printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\')):'match none':""
+augroup augroup_jw
+    autocmd CursorMoved * exe exists("HlUnderCursor")?HlUnderCursor?printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\')):'match none':""
+augroup END
 let HlUnderCursor=0
 noremap <silent> <F3> :exe "let HlUnderCursor=exists(\"HlUnderCursor\")?HlUnderCursor*-1+1:1"<CR>
 " TODO: see this http://www.vim.org/scripts/script.php?script_id=4306
 
-autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
+augroup augroup_jw
+    autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
+augroup END
 
 " }}}
 " ---------------------------------------------------------------------------- 
@@ -1238,10 +1212,5 @@ endif
 
 " }}}
 " ---------------------------------------------------------------------------- 
-
-" TODO:
-" replace map by noremap etc.
-" put autocommands in a group and clear it properly.
-" "=" (runs equalprg or c-indent) doesn't seem all that useful in comparison to something like clang-format. remap it?
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
