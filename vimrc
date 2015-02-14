@@ -767,7 +767,7 @@ endif
 set laststatus=2
 
 let g:lightline = {
-    \ 'colorscheme': 'jw',
+    \ 'colorscheme': 'default',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
     \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], [ 'fugitive' ] ]
@@ -799,6 +799,11 @@ let g:lightline = {
     \   'ctrlpmark': 'CtrlPMark',
     \ },
     \ }
+
+if has('gui_running')
+    " My custom colorscheme doesn't yet work well with 256 colors.
+    let g:lightline.colorscheme = 'jw'
+endif
 
 function! MyModified()
     let mark = '+'
