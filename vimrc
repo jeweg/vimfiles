@@ -112,7 +112,7 @@ else
 endif
 
 " Plugins worth checking out again:
-" Plugin 'Shougo/vimfiler.vim' 
+Plugin 'Shougo/vimfiler.vim' 
 " Plugin 'myusuf3/numbers.vim'
 " Plugin 'tomtom/shymenu_vim'
 " Plugin 'godlygeek/tabular'
@@ -267,7 +267,7 @@ endif
 
 set backspace=indent,eol,start  " Backspace for dummies
 set linespace=0                 " No extra spaces between rows
-set number                      " Line numbers on
+set nonumber                    " Line numbers
 set showmatch                   " Show matching brackets/parenthesis
 set incsearch                   " Find as you type search
 set hlsearch                    " Highlight search terms
@@ -277,6 +277,7 @@ set smartcase                   " Case sensitive when uc present
 set wildmenu                    " Show list instead of just completing
 set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
 set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+set wrapscan                    " Search wraps around the end of the file
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 
@@ -308,7 +309,7 @@ set foldtext=NeatFoldText()
 " Show whitespace?
 set nolist
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
-
+set sessionoptions="blank,buffers,curdir,folds,help,options,tabpages,winsize,winpos,slash,unix"
 set wrap
 set modelines=1
 
@@ -349,7 +350,7 @@ set linebreak
 if s:has_patched_font
     set showbreak=
 elseif s:has_unicode_font
-    set showbreak=►►
+    set showbreak=➤➤
 else
     set showbreak=>>
 endif
@@ -497,7 +498,10 @@ endif
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-nnoremap <SPACE> <Plug>(easymotion-s2)
+let g:EasyMotion_use_upper = 1
+let g:EasyMotion_smartcase = 1
+"nnoremap <SPACE> <Plug>(easymotion-s2)
+nmap <SPACE> <Plug>(easymotion-s2)
 
 " }}}
 " incsearch ----------------------------------------------------------{{{
@@ -988,7 +992,7 @@ if 1
     let g:ycm_register_as_syntastic_checker = 1 "default 1
     let g:Show_diagnostics_ui = 1 "default 1
         
-    "will put icons in Vim's gutter on lines that have a diagnostic set.
+    "Will put icons in Vim's gutter on lines that have a diagnostic set.
     "Turning this off will also turn off the YcmErrorLine and YcmWarningLine
     "highlighting
     let g:ycm_enable_diagnostic_signs = 1
@@ -1008,21 +1012,27 @@ if 1
     nnoremap <F10> :YcmCompleter GoTo<CR>
 
     if s:is_windows
-        let g:ycm_filetype_blacklist = {
-        \ 'tagbar' : 1,
-        \ 'qf' : 1,
-        \ 'notes' : 1,
-        \ 'markdown' : 1,
-        \ 'unite' : 1,
-        \ 'text' : 1,
-        \ 'vimwiki' : 1,
-        \ 'pandoc' : 1,
-        \ 'infolog' : 1,
-        \ 'mail' : 1
-        \}
-        let g:ycm_filetype_blacklist.c = 1
-        let g:ycm_filetype_blacklist.cpp = 1
+        let g:ycm_filetype_specific_completion_to_disable = {
+                    \ 'cpp' : 1,
+                    \ 'c' : 1
+                    \}
     endif
+    "if s:is_windows
+        "let g:ycm_filetype_blacklist = {
+        "\ 'tagbar' : 1,
+        "\ 'qf' : 1,
+        "\ 'notes' : 1,
+        "\ 'markdown' : 1,
+        "\ 'unite' : 1,
+        "\ 'text' : 1,
+        "\ 'vimwiki' : 1,
+        "\ 'pandoc' : 1,
+        "\ 'infolog' : 1,
+        "\ 'mail' : 1
+        "\}
+        "let g:ycm_filetype_blacklist.c = 1
+        "let g:ycm_filetype_blacklist.cpp = 1
+    "endif
 
     if 0
         let g:ycm_server_use_vim_stdout = 1
@@ -1106,11 +1116,25 @@ if 1
 endif
 
 " }}}
+" Vimfiler -----------------------------------------------------------{{{
+" https://github.com/Shougo/vimfiler.vim
+
+if 1
+    let g:vimfiler_as_default_explorer = 1
+    if s:has_unicode_font
+        let g:vimfiler_tree_closed_icon = "➤"
+        let g:vimfiler_tree_opened_icon = "▼"
+    endif
+    nnoremap <c-u> :VimFiler<cr>
+endif
+
+" }}}
 " visual_studio.vim --------------------------------------------------{{{
 " https://github.com/lorry-lee/visual_studio.vim
 
 if 1
-    nnoremap <F5> :call DTEBuildStartupProject()<Cr>
+    nnoremap <F5> :call DTEBuildStartupProject()<cr>
+    inoremap <F5> <esc>:call DTEBuildStartupProject()<cr>
 endif
 
 " }}}
@@ -1166,6 +1190,14 @@ augroup augroup_jw
     autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
 augroup END
 
+
+" Display diff with the file.
+command! -nargs=1 -complete=file Diff vertical diffsplit <args>
+" Display diff from last save.
+command! DiffOrig vert new | setlocal bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+" Disable diff mode.
+command! -nargs=0 Undiff setlocal nodiff noscrollbind wrap
+
 " }}}
 " Demo mode ----------------------------------------------------------{{{
 " Enable to get a look better suited to presentations/projectors:
@@ -1186,5 +1218,8 @@ if 0
 endif
 
 " }}}
+
+" TODO: command that closes a buffer and then also the window if it ended up
+" buffer-less.
 
 " vim:fen:fdm=marker:fmr={{{,}}}:fdl=0:fdc=1
