@@ -686,8 +686,8 @@ if 1
     call unite#filters#sorter_default#use(['sorter_rank'])
 
     nnoremap <silent> <c-i> :Unite -auto-resize buffer source bookmark register history/yank<cr>
-    nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file file_rec/async -default-action=split<cr>
-    nnoremap <silent> <c-p> :Unite -auto-resize file_rec/async -default-action=split<cr>
+    nnoremap <silent> <c-o> :Unite -auto-resize buffer file_mru file -default-action=split<cr>
+    nnoremap <silent> <c-p> :Unite -auto-resize file_rec/async file_mru -default-action=split<cr>
 
     augroup augroup_jw
         autocmd FileType unite call s:my_unite_settings()
