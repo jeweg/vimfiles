@@ -1213,15 +1213,15 @@ function! g:ToggleLineNumbers()
         let b:lineNumbersState = 0
     endif
     if b:lineNumbersState == 0
-        b:lineNumbersState = 1
+        let b:lineNumbersState = 1
         set number
         set norelativenumber
     elseif b:lineNumbersState == 1
-        b:lineNumbersState = 2
+        let b:lineNumbersState = 2
         set number
         set relativenumber
     else
-        b:lineNumbersState = 0
+        let b:lineNumbersState = 0
         set nonumber
         set norelativenumber
     endif
