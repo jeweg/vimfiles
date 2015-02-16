@@ -106,6 +106,7 @@ Plugin 'Shougo/vimfiler.vim'
 
 Plugin 'Shougo/neossh.vim'
 Plugin 'godlygeek/tabular'
+Plugin 'vim-scripts/diffchanges.vim'
 
 if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
@@ -499,13 +500,15 @@ endif
 " https://github.com/Lokaltog/vim-easymotion
 " http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/
 
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
+if 1
+    let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-let g:EasyMotion_use_upper = 1
-let g:EasyMotion_smartcase = 1
-"nnoremap <SPACE> <Plug>(easymotion-s2)
-nmap <SPACE> <Plug>(easymotion-s2)
-
+    let g:EasyMotion_use_upper = 1
+    let g:EasyMotion_smartcase = 1
+    "nnoremap <SPACE> <Plug>(easymotion-s2)
+    nmap <SPACE> <Plug>(easymotion-s2)
+endif
+    
 " }}}
 " incsearch ----------------------------------------------------------{{{
 " https://github.com/haya14busa/incsearch.vim
@@ -527,7 +530,8 @@ endif
 " Let's try this: https://github.com/JazzCore/ctrlp-cmatcher/
 " or this: https://github.com/burke/matcher
 
-if 0
+if 1
+
     let g:ctrlp_working_path_mode = 'ra'
 
     if s:is_windows
@@ -661,6 +665,7 @@ endif
 
 " }}}
 " Unite --------------------------------------------------------------{{{
+
 if 1
 
     let g:unite_data_directory = s:temp_dir
@@ -729,175 +734,179 @@ endif
 " }}}
 " lightline ----------------------------------------------------------{{{
 
-set laststatus=2
+if 1
 
-let g:lightline = {
-    \ 'colorscheme': 'default',
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
-    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], [ 'fugitive' ] ]
-    \ },
-    \ 'inactive': {
-    \   'left': [ ['filename'] ],
-    \   'right': [ [ 'lineinfo' ], ['percent'] ],
-    \ },
-    \ 'tabline': {
-    \   'left': [ [ 'tabs' ] ],
-    \   'right': [ [ 'close' ] ],
-    \ },
-    \ 'tab': {
-    \   'active': ['tabnum', 'fullfilename'],
-    \   'inactive': ['tabnum', 'filename'],
-    \ },
-    \ 'tab_component_function': {
-    \   'filename': 'MyTabFilename',
-    \   'fullfilename': 'MyTabFullFilename'
-    \ },
-    \ 'component_function': {
-    \   'fugitive': 'MyFugitive',
-    \   'filename': 'MyFilename',
-    \   'fullfilename': 'MyFullFilename',
-    \   'fileformat': 'MyFileformat',
-    \   'filetype': 'MyFiletype',
-    \   'fileencoding': 'MyFileencoding',
-    \   'mode': 'MyMode',
-    \   'ctrlpmark': 'CtrlPMark',
-    \ },
-    \ }
+    set laststatus=2
 
-if has('gui_running')
-    " My custom colorscheme doesn't yet work well with 256 colors.
-    let g:lightline.colorscheme = 'jw'
-endif
+    let g:lightline = {
+        \ 'colorscheme': 'default',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
+        \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], [ 'fugitive' ] ]
+        \ },
+        \ 'inactive': {
+        \   'left': [ ['filename'] ],
+        \   'right': [ [ 'lineinfo' ], ['percent'] ],
+        \ },
+        \ 'tabline': {
+        \   'left': [ [ 'tabs' ] ],
+        \   'right': [ [ 'close' ] ],
+        \ },
+        \ 'tab': {
+        \   'active': ['tabnum', 'fullfilename'],
+        \   'inactive': ['tabnum', 'filename'],
+        \ },
+        \ 'tab_component_function': {
+        \   'filename': 'MyTabFilename',
+        \   'fullfilename': 'MyTabFullFilename'
+        \ },
+        \ 'component_function': {
+        \   'fugitive': 'MyFugitive',
+        \   'filename': 'MyFilename',
+        \   'fullfilename': 'MyFullFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode',
+        \   'ctrlpmark': 'CtrlPMark',
+        \ },
+        \ }
 
-function! MyModified()
-    let mark = '+'
-    if s:has_unicode_font
-        let mark = '★'
+    if has('gui_running')
+        " My custom colorscheme doesn't yet work well with 256 colors.
+        let g:lightline.colorscheme = 'jw'
     endif
-    return &ft =~ 'help' ? '' : &modified ? mark : &modifiable ? '' : '-'
-endfunction
 
-function! MyReadonly()
-    let mark = 'RO'
-    if s:has_patched_font
-       let mark = ''
-    elseif s:has_unicode_font
-       let mark = '☒'
-    endif
-    return &ft !~? 'help' && &readonly ? mark : ''
-endfunction
-
-function! MyTabFullFilename(tabindex)
-    "echo getbufvar(1, "&modfied")
-    "echo getbufvar(1, "&readonly")
-    " gettabva
-    return "bar"
-endfunction
-
-function! MyTabFilename(tabindex)
-    return "foo"
-endfunction
-
-function! MyFilename()
-  let fname = expand('%:t')
-  return fname == 'ControlP' ? g:lightline.ctrlp_item :
-        \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname =~ '__Gundo\|NERD_tree' ? '' :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft == 'unite' ? unite#get_status_string() :
-        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? ( winwidth(0) > 50 ? expand('%:p') : fname ) : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
-endfunction
-
-function! MyFugitive()
-    try
-        if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-            let mark = ''
-            if s:has_patched_font
-                let mark = ' '
-            endif
-            let _ = fugitive#head()
-            return strlen(_) ? mark._ : ''
+    function! MyModified()
+        let mark = '+'
+        if s:has_unicode_font
+            let mark = '★'
         endif
-    catch
-    endtry
-    return ''
-endfunction
+        return &ft =~ 'help' ? '' : &modified ? mark : &modifiable ? '' : '-'
+    endfunction
 
-function! MyFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
-endfunction
+    function! MyReadonly()
+        let mark = 'RO'
+        if s:has_patched_font
+           let mark = ''
+        elseif s:has_unicode_font
+           let mark = '☒'
+        endif
+        return &ft !~? 'help' && &readonly ? mark : ''
+    endfunction
 
-function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
-endfunction
+    function! MyTabFullFilename(tabindex)
+        "echo getbufvar(1, "&modfied")
+        "echo getbufvar(1, "&readonly")
+        " gettabva
+        return "bar"
+    endfunction
 
-function! MyFileencoding()
-  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
-endfunction
+    function! MyTabFilename(tabindex)
+        return "foo"
+    endfunction
 
-function! MyMode()
-  let fname = expand('%:t')
-  return fname == '__Tagbar__' ? 'Tagbar' :
-        \ fname == 'ControlP' ? 'CtrlP' :
-        \ fname == '__Gundo__' ? 'Gundo' :
-        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ &ft == 'unite' ? 'Unite' :
-        \ &ft == 'vimfiler' ? 'VimFiler' :
-        \ &ft == 'vimshell' ? 'VimShell' :
-        \ winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
+    function! MyFilename()
+      let fname = expand('%:t')
+      return fname == 'ControlP' ? g:lightline.ctrlp_item :
+            \ fname == '__Tagbar__' ? g:lightline.fname :
+            \ fname =~ '__Gundo\|NERD_tree' ? '' :
+            \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+            \ &ft == 'unite' ? unite#get_status_string() :
+            \ &ft == 'vimshell' ? vimshell#get_status_string() :
+            \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+            \ ('' != fname ? ( winwidth(0) > 50 ? expand('%:p') : fname ) : '[No Name]') .
+            \ ('' != MyModified() ? ' ' . MyModified() : '')
+    endfunction
 
-function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
-          \ , g:lightline.ctrlp_next], 0)
-  else
-    return ''
-  endif
-endfunction
+    function! MyFugitive()
+        try
+            if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+                let mark = ''
+                if s:has_patched_font
+                    let mark = ' '
+                endif
+                let _ = fugitive#head()
+                return strlen(_) ? mark._ : ''
+            endif
+        catch
+        endtry
+        return ''
+    endfunction
 
-let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusFunc_1',
-  \ 'prog': 'CtrlPStatusFunc_2',
-  \ }
+    function! MyFileformat()
+      return winwidth(0) > 70 ? &fileformat : ''
+    endfunction
 
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
-  return lightline#statusline(0)
-endfunction
+    function! MyFiletype()
+      return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+    endfunction
 
-function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
-endfunction
+    function! MyFileencoding()
+      return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+    endfunction
 
-let g:tagbar_status_func = 'TagbarStatusFunc'
+    function! MyMode()
+      let fname = expand('%:t')
+      return fname == '__Tagbar__' ? 'Tagbar' :
+            \ fname == 'ControlP' ? 'CtrlP' :
+            \ fname == '__Gundo__' ? 'Gundo' :
+            \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
+            \ fname =~ 'NERD_tree' ? 'NERDTree' :
+            \ &ft == 'unite' ? 'Unite' :
+            \ &ft == 'vimfiler' ? 'VimFiler' :
+            \ &ft == 'vimshell' ? 'VimShell' :
+            \ winwidth(0) > 60 ? lightline#mode() : ''
+    endfunction
 
-function! TagbarStatusFunc(current, sort, fname, ...) abort
-    let g:lightline.fname = a:fname
-  return lightline#statusline(0)
-endfunction
+    function! CtrlPMark()
+      if expand('%:t') =~ 'ControlP'
+        call lightline#link('iR'[g:lightline.ctrlp_regex])
+        return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+              \ , g:lightline.ctrlp_next], 0)
+      else
+        return ''
+      endif
+    endfunction
 
-let g:unite_force_overwrite_statusline = 0
-let g:vimfiler_force_overwrite_statusline = 0
-let g:vimshell_force_overwrite_statusline = 0
+    let g:ctrlp_status_func = {
+      \ 'main': 'CtrlPStatusFunc_1',
+      \ 'prog': 'CtrlPStatusFunc_2',
+      \ }
 
-if s:has_patched_font
-	let g:lightline.separator = { 'left': '', 'right': '' }
-    let g:lightline.subseparator = { 'left': '', 'right': '' }
-else
-    let g:lightline.separator = { 'left': '', 'right': '' }
-    let g:lightline.subseparator = { 'left': '|', 'right': '|' }
+    function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+      let g:lightline.ctrlp_regex = a:regex
+      let g:lightline.ctrlp_prev = a:prev
+      let g:lightline.ctrlp_item = a:item
+      let g:lightline.ctrlp_next = a:next
+      return lightline#statusline(0)
+    endfunction
+
+    function! CtrlPStatusFunc_2(str)
+      return lightline#statusline(0)
+    endfunction
+
+    let g:tagbar_status_func = 'TagbarStatusFunc'
+
+    function! TagbarStatusFunc(current, sort, fname, ...) abort
+        let g:lightline.fname = a:fname
+      return lightline#statusline(0)
+    endfunction
+
+    let g:unite_force_overwrite_statusline = 0
+    let g:vimfiler_force_overwrite_statusline = 0
+    let g:vimshell_force_overwrite_statusline = 0
+
+    if s:has_patched_font
+      let g:lightline.separator = { 'left': '', 'right': '' }
+        let g:lightline.subseparator = { 'left': '', 'right': '' }
+    else
+        let g:lightline.separator = { 'left': '', 'right': '' }
+        let g:lightline.subseparator = { 'left': '|', 'right': '|' }
+    endif
+
 endif
-
+    
 " }}}
 " UndoTree -----------------------------------------------------------{{{
 
@@ -911,7 +920,7 @@ endif
 " Syntastic ----------------------------------------------------------{{{
 " https://github.com/scrooloose/syntastic/blob/master/doc/syntastic.txt
 
-if 0
+if 1
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
     let g:syntastic_aggregate_errors = 1
@@ -1047,10 +1056,11 @@ endif
 " SnipMate -----------------------------------------------------------{{{
 " https://github.com/msanders/snipmate.vim/blob/master/doc/snipMate.txt
 
-if 0
+if 1
     imap <C-h> <Plug>snipMateNextOrTrigger
     smap <C-h> <Plug>snipMateNextOrTrigger
 endif
+
 " }}}
 " UltiSnips ----------------------------------------------------------{{{
 " https://github.com/SirVer/ultisnips
@@ -1072,17 +1082,19 @@ if 1
         let g:UltiSnipsSnippetsDir = expand('$HOME/.vim/UltiSnips')
     endif    
 endif
+
 " }}}
 " fugitive -----------------------------------------------------------{{{
 " TODO: See http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
 " and http://mislav.uniqpath.com/2014/02/hidden-documentation/
 
-" No customizations here yet.
+if 1
+endif
 
 " }}}
 " Yankround ----------------------------------------------------------{{{
 
-if 0
+if 1
     nmap p <Plug>(yankround-p)
     nmap P <Plug>(yankround-P)
     "nmap <C-p> <Plug>(yankround-prev)
@@ -1097,6 +1109,7 @@ if 1
     au Syntax * RainbowParenthesesLoadRound
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
+    au Syntax * RainbowParenthesesLoadChevrons
     nnoremap <silent> <leader>r :RainbowParenthesesToggle<Cr>
 endif
 
@@ -1124,11 +1137,28 @@ endif
 
 if 1
     let g:vimfiler_as_default_explorer = 1
+    "let g:vimfiler_ignore_pattern = '^\%(\.git\|\.svn\|\.DS_Store\)$'
+    let g:vimfiler_ignore_pattern = '\v^(.git|.svn|.DS_Store)$'
+
     if s:has_unicode_font
-        let g:vimfiler_tree_closed_icon = "➤"
+        let g:vimfiler_tree_opened_icon = '▾'
+        let g:vimfiler_tree_closed_icon = '▸'
+        
+        let g:vimfiler_tree_closed_icon = ">"
         let g:vimfiler_tree_opened_icon = "▼"
+        let g:vimfiler_tree_leaf_icon = '│'
+        let g:vimfiler_file_icon = ' '
+        let g:vimfiler_marked_file_icon = '*'
     endif
+    
     nnoremap <c-u> :VimFiler<cr>
+    
+    augroup augroup_jw
+        autocmd FileType vimfiler call s:my_vimfiler_settings()
+    augroup END
+    function! s:my_vimfiler_settings()
+        nmap <buffer> <c-u> <Plug>(vimfiler_close)
+    endfunction
 endif
 
 " }}}
