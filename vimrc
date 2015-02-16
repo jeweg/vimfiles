@@ -102,6 +102,10 @@ Plugin 'SirVer/ultisnips'
 Plugin 'spolu/dwm.vim'
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/neomru.vim'
+Plugin 'Shougo/vimfiler.vim' 
+
+Plugin 'Shougo/neossh.vim'
+Plugin 'godlygeek/tabular'
 
 if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
@@ -112,8 +116,6 @@ else
 endif
 
 " Plugins worth checking out again:
-Plugin 'Shougo/vimfiler.vim' 
-" Plugin 'myusuf3/numbers.vim'
 " Plugin 'tomtom/shymenu_vim'
 " Plugin 'godlygeek/tabular'
 " Plugin 'Shougo/neossh.vim'
@@ -121,6 +123,7 @@ Plugin 'Shougo/vimfiler.vim'
 " Plugins I've tried in the past, but dropped again for various reasons:
 "
 " Plugin 'zhaocai/GoldenView.Vim' < Seems to make a mess of my windows.
+" Plugin 'myusuf3/numbers.vim' < Seemed useless for me.
 " Plugin 'kien/ctrlp.vim.git' < Tried hard to like it, but slow and awkward matching sometimes.
 " Plugin 'sgur/ctrlp-extensions.vim' < See above.
 " Plugin 'JazzCore/ctrlp-cmatcher' < Attempt to fix matcher on Linux. Worked better. Couldn't get working on Windows.
@@ -1175,7 +1178,26 @@ inoremap <C-S> <Esc>:update<CR>a
 " noremap <Shift-C-L> :set invnumber<CR>
 " noremap! <Shift-C-L> <Esc>:set invnumber<CR>
 
-nnoremap <silent> <F2> :set nu!<Cr>
+function! g:ToggleLineNumbers()
+    if exists("b:lineNumbersState") == 0
+        let b:lineNumbersState = 0
+    endif
+    if b:lineNumbersState == 0
+        b:lineNumbersState = 1
+        set number
+        set norelativenumber
+    elseif b:lineNumbersState == 1
+        b:lineNumbersState = 2
+        set number
+        set relativenumber
+    else
+        b:lineNumbersState = 0
+        set nonumber
+        set norelativenumber
+    endif
+endfunction
+"nnoremap <silent> <F2> :set nu!<cr>
+nnoremap <silent> <F2> :call g:ToggleLineNumbers()<cr>
 
 
 " From http://stackoverflow.com/a/25887606:
