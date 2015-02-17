@@ -920,7 +920,7 @@ endif
 " Syntastic ----------------------------------------------------------{{{
 " https://github.com/scrooloose/syntastic/blob/master/doc/syntastic.txt
 
-if 1
+if 0
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
     let g:syntastic_aggregate_errors = 1
@@ -1023,12 +1023,14 @@ if 1
     nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
     nnoremap <F10> :YcmCompleter GoTo<CR>
 
+    if 0
     if s:is_windows
         let g:ycm_filetype_specific_completion_to_disable = {
                     \ 'cpp' : 1,
                     \ 'c' : 1
                     \}
     endif
+endif
     "if s:is_windows
         "let g:ycm_filetype_blacklist = {
         "\ 'tagbar' : 1,
@@ -1056,7 +1058,7 @@ endif
 " SnipMate -----------------------------------------------------------{{{
 " https://github.com/msanders/snipmate.vim/blob/master/doc/snipMate.txt
 
-if 1
+if 0
     imap <C-h> <Plug>snipMateNextOrTrigger
     smap <C-h> <Plug>snipMateNextOrTrigger
 endif
