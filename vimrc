@@ -107,12 +107,14 @@ Plugin 'Shougo/neossh.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'vim-scripts/diffchanges.vim'
 
+Plugin 'Valloric/YouCompleteMe'
+
 if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
 else
     " On Windows, use a precompiled version of Ycm
     " that's not version-controlled by vundle.
-    Plugin 'Valloric/YouCompleteMe'
+"    Plugin 'Valloric/YouCompleteMe'
 endif
 
 " Plugins worth checking out again:
@@ -147,7 +149,7 @@ filetype plugin indent on " Required
 
 " A Windows-specific extra plugin.
 if s:is_windows
-    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
+    "set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
 endif
 
 " Find and import manual plugins.
@@ -1018,8 +1020,7 @@ if 1
     let g:Show_diagnostics_ui = 1 "default 1
         
     "Will put icons in Vim's gutter on lines that have a diagnostic set.
-    "Turning this off will also turn off the YcmErrorLine and YcmWarningLine
-    "highlighting
+    "Turning this off will also turn off the YcmErrorLine and YcmWarningLine highlighting.
     let g:ycm_enable_diagnostic_signs = 1
     let g:ycm_enable_diagnostic_highlighting = 1
     let g:ycm_always_populate_location_list = 1 "default 0
@@ -1030,6 +1031,8 @@ if 1
     "you're editing in console Vim, and '<C-Space>' in GUI Vim. This means that you
     "can just press '<C-Space>' in both console and GUI Vim and YCM will do the
     "right thing.
+
+    let g:ycm_global_ycm_extra_conf = s:vimfiles_dir . '/.ycm_extra_conf.py'
 
     let g:ycm_key_invoke_completion = '<C-Space>'
 
@@ -1043,7 +1046,8 @@ if 1
                     \ 'c' : 1
                     \}
     endif
-endif
+    endif
+    
     "if s:is_windows
         "let g:ycm_filetype_blacklist = {
         "\ 'tagbar' : 1,
@@ -1061,9 +1065,11 @@ endif
         "let g:ycm_filetype_blacklist.cpp = 1
     "endif
 
-    if 0
-        let g:ycm_server_use_vim_stdout = 1
+    let g:ycm_confirm_extra_conf = 0
+    if 1
+        let g:ycm_server_use_vim_stdout = 0
         let g:ycm_server_log_level = 'debug'
+        let g:ycm_server_keep_logfiles = 1
     endif
 endif
 
