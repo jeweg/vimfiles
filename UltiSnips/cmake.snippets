@@ -1,35 +1,43 @@
 snippet new
-	cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-	project(${1})
-	
-	${0}
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+project(${1})
+
+${0}
+endsnippet
 
 snippet adde
-	add_executable(${1} ${0})
+add_executable(${1} ${0})
+endsnippet
 
 snippet outm
-	message(STATUS "${1}")
-	${0}
+message(STATUS "${1}")
+${0}
+endsnippet
 
 snippet # 
-	###################################################################
-	
-	${0}
+###################################################################
+
+${0}
+endsnippet
 
 snippet outv
-	message(STATUS "${1:name} = \"${$1}\"")
-	${0}
+message(STATUS "${1:name} = \"${$1}\"")
+${0}
+endsnippet
 
 snippet fatal
-	message(FATAL_ERROR "${1}")
-	${0}
+message(FATAL_ERROR "${1}")
+${0}
+endsnippet
 
 snippet foreach
-	foreach(${1} IN LISTS ${2})
-	    ${0}
-	endforeach()
- 
+foreach(${1} IN LISTS ${2})
+    ${0}
+endforeach()
+endsnippet
+
 snippet func
-	function(${1})
-	    ${0}
-	endfunction()
+function(${1})
+    ${0}
+endfunction()
+endsnippet
