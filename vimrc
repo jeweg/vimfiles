@@ -108,6 +108,7 @@ Plugin 'godlygeek/tabular'
 Plugin 'vim-scripts/diffchanges.vim'
 
 Plugin 'Valloric/YouCompleteMe'
+"Plugin 'scrooloose/syntastic'
 
 if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
@@ -134,7 +135,6 @@ endif
 " Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
 " Plugin 'Shougo/neocomplcache.vim' < Replaced by Ycm.
 " Plugin 'majutsushi/tagbar' < Replaced by Ycm.
-" Plugin 'scrooloose/syntastic' < Replaced by Ycm. Might not be a 100% replacement, maybe revisit later.
 " Plugin 'takac/vim-hardtime' < Too restrictive.
 " Plugin 'blueyed/vim-diminactive' < Gave me problems. Can't remember details.
 " Plugin 'scrooloose/nerdtree.git' < I don't feel the need for tree views at the  moment.
@@ -937,7 +937,7 @@ if 0
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
     let g:syntastic_aggregate_errors = 1
-    " let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_stl_format = '%E{E %fe #%e}%B{, }%W{W %fw #%w}'
 
     augroup augroup_jw
@@ -1009,7 +1009,7 @@ endif
 " }}}
 " YouCompleteMe ------------------------------------------------------{{{
 " https://github.com/Valloric/YouCompleteMe
-" http://stackoverflow.com/a/24520161 
+" TODO: http://stackoverflow.com/a/24520161 
 
 if 1
     " Auto-close scratch window.
@@ -1025,48 +1025,30 @@ if 1
     let g:ycm_enable_diagnostic_highlighting = 1
     let g:ycm_always_populate_location_list = 1 "default 0
     let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
-
-    "Console Vim (not Gvim or MacVim) passes '<Nul>' to Vim when the user types
-    "'<C-Space>' so YCM will make sure that '<Nul>' is used in the map command when
-    "you're editing in console Vim, and '<C-Space>' in GUI Vim. This means that you
-    "can just press '<C-Space>' in both console and GUI Vim and YCM will do the
-    "right thing.
+    let g:ycm_complete_in_strings = 1 "default 1
+    let g:ycm_goto_buffer_command = 'horizontal-split' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]
 
     let g:ycm_global_ycm_extra_conf = s:vimfiles_dir . '/.ycm_extra_conf.py'
-
-    let g:ycm_key_invoke_completion = '<C-Space>'
+    
+    let g:ycm_key_invoke_completion = ''
+    let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
 
     nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
     nnoremap <F10> :YcmCompleter GoTo<CR>
 
-    if 0
     if s:is_windows
+        " I just couldn't get semantic C completion to work under Windows.
         let g:ycm_filetype_specific_completion_to_disable = {
                     \ 'cpp' : 1,
                     \ 'c' : 1
                     \}
+        " Don't disable syntastic.
+        let g:ycm_show_diagnostics_ui = 1
+        let g:ycm_register_as_syntastic_checker = 0 "default 1
     endif
-    endif
-    
-    "if s:is_windows
-        "let g:ycm_filetype_blacklist = {
-        "\ 'tagbar' : 1,
-        "\ 'qf' : 1,
-        "\ 'notes' : 1,
-        "\ 'markdown' : 1,
-        "\ 'unite' : 1,
-        "\ 'text' : 1,
-        "\ 'vimwiki' : 1,
-        "\ 'pandoc' : 1,
-        "\ 'infolog' : 1,
-        "\ 'mail' : 1
-        "\}
-        "let g:ycm_filetype_blacklist.c = 1
-        "let g:ycm_filetype_blacklist.cpp = 1
-    "endif
 
     let g:ycm_confirm_extra_conf = 0
-    if 1
+    if 0
         let g:ycm_server_use_vim_stdout = 0
         let g:ycm_server_log_level = 'debug'
         let g:ycm_server_keep_logfiles = 1
