@@ -103,7 +103,6 @@ Plugin 'spolu/dwm.vim'
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/neomru.vim'
 Plugin 'Shougo/vimfiler.vim' 
-
 Plugin 'Shougo/neossh.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'vim-scripts/diffchanges.vim'
