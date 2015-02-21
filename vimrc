@@ -406,6 +406,18 @@ augroup END
 set diffopt=filler,vertical
 if &diff
     
+    func CheckSwap()
+      swapname
+      if v:statusmsg =~ '\.sw[^p]$'
+        set ro
+      endif
+    endfunc
+
+    if &swf
+      set shm+=A
+      au BufReadPre * call CheckSwap()
+    endif
+    
     " Faster navigation between differences.
     nnoremap <C-Up> [c
     nnoremap <C-Down> ]c
@@ -920,7 +932,7 @@ endif
 " Syntastic ----------------------------------------------------------{{{
 " https://github.com/scrooloose/syntastic/blob/master/doc/syntastic.txt
 
-if 1
+if 0
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
     let g:syntastic_aggregate_errors = 1
@@ -944,7 +956,9 @@ if 1
     if !&diff
         " Only do this in non-diff mode for now.
         map <silent> <C-W> :Bdelete<CR>
-        map! <silent> <C-W> <Esc>:Bdelete<CR>
+        map! <silent> <C-W> <esc>:Bdelete<CR>
+        map <silent> <C-S-W> :Bdelete!<cr>
+        map! <silent> <C-S-W> <esc>:Bdelete!<cr>
     endif
 endif
 
