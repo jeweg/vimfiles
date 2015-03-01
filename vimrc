@@ -543,7 +543,7 @@ endif
 " Let's try this: https://github.com/JazzCore/ctrlp-cmatcher/
 " or this: https://github.com/burke/matcher
 
-if 1
+if 0
 
     let g:ctrlp_working_path_mode = 'ra'
 
@@ -586,6 +586,7 @@ if 1
         " let s:ctrlp_fallback = 'ag -l --nocolor -g "" %s'
         " From http://blog.patspam.com/2014/super-fast-ctrlp, slightly modified.
         let s:ctrlp_fallback = 'ag -i --nocolor --nogroup --hidden
+          \ --ignore "_build"
           \ --ignore .git
           \ --ignore .svn
           \ --ignore .hg
@@ -728,6 +729,7 @@ if 1
         let g:unite_source_grep_command = 'ag'
         let g:unite_source_grep_recursive_opt = ''    
         let g:unite_source_grep_default_opts = '-i --nocolor --nogroup --hidden -S -C4
+              \ --ignore "_build"
               \ --ignore .git
               \ --ignore .svn
               \ --ignore .hg
