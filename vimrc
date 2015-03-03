@@ -1255,6 +1255,13 @@ command! DiffOrig vert new | setlocal bt=nofile | r # | 0d_ | diffthis | wincmd 
 " Disable diff mode.
 command! -nargs=0 Undiff setlocal nodiff noscrollbind wrap
 
+
+augroup augroup_jw
+    autocmd FileType cmake nnoremap <buffer> <leader>t "tciw${<esc>"tpa}<esc>
+    autocmd FileType c,cpp nnoremap <buffer> <leader>i gg/#include<cr>GNo#include ""<esc>i
+augroup END
+
+
 " }}}
 " Demo mode ----------------------------------------------------------{{{
 " Enable to get a look better suited to presentations/projectors:
