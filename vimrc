@@ -122,6 +122,7 @@ endif
 " Plugin 'tomtom/shymenu_vim'
 " Plugin 'godlygeek/tabular'
 " Plugin 'Shougo/neossh.vim'
+" Plugin 'tyru/open-browser.vim'
 "
 " Plugins I've tried in the past, but dropped again for various reasons:
 "
