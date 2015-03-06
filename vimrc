@@ -372,7 +372,6 @@ augroup augroup_jw
     autocmd GUIEnter * set visualbell t_vb=
 augroup END
 
-set hlsearch
 set smartcase
 set ignorecase
 set incsearch
