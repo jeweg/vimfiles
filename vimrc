@@ -972,7 +972,7 @@ endif
 
 if 1
     let g:dwm_map_keys = 0
-    let g:dwm_master_pane_width=110
+    let g:dwm_master_pane_width=140
 
     noremap <C-J> <C-W>w
     noremap! <C-J> <Esc><C-W>w<CR>i

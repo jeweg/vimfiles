@@ -9,6 +9,7 @@ if !has('python')
 endif
 
 command! QuickDocQt call quickdoc#qt()
+command! QuickDocCMake call quickdoc#cmake()
 
 if !exists('g:quickdoc_map_keys')
     let g:quickdoc_map_keys = 1
@@ -18,6 +19,7 @@ if !exists('g:quickdoc_map_prefix')
 endif
 
 if g:quickdoc_map_keys
-    execute "nnoremap ".g:quickdoc_map_prefix."q :QuickDocQt<cr>"
+    execute "nnoremap <silent> ".g:quickdoc_map_prefix."q :QuickDocQt<cr>"
+    execute "nnoremap <silent> ".g:quickdoc_map_prefix."c :QuickDocCMake<cr>"
 endif
 
