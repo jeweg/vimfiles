@@ -1156,7 +1156,7 @@ if 1
         let g:vimfiler_marked_file_icon = '*'
     endif
     
-    nnoremap <c-u> :VimFiler<cr>
+    nnoremap <c-u> :VimFiler -create<cr>
     
     augroup augroup_jw
         autocmd FileType vimfiler call s:my_vimfiler_settings()
