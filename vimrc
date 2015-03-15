@@ -194,6 +194,7 @@ if &t_Co >= 256 || has("gui_running")
     hi DiffDelete     term=bold ctermfg=16 ctermbg=52 guifg=#40000A guibg=#700009
     hi DiffText       term=reverse cterm=reverse ctermfg=81 ctermbg=16 gui=reverse guifg=#8fbfdc guibg=#000000
     hi NonText        guifg=#e8e8f7
+    hi SpecialKey     guifg=#e8e8f7
     
 endif
 
@@ -314,18 +315,18 @@ set foldtext=NeatFoldText()
 
 " Show whitespace?
 set nolist
-set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+set listchars=tab:\ \ ,trail:•,extends:#,nbsp:.
+
 set sessionoptions="blank,buffers,curdir,folds,help,options,tabpages,winsize,winpos,slash,unix"
 set wrap
 set modelines=1
 
-" Indentation Settings
+" Indentation settings
 set autoindent                  " Indent at the same level of the previous line
-set expandtab                   " Tabs are spaces, not tabs
 set nosmartindent               " smartindent sucks for anything but C-like languages.
-augroup augroup_jw
-    autocmd FileType c,cpp,cs,objc setlocal smartindent
-augroup END
+
+" Tab settings
+set expandtab                   " Tabs are spaces, not tabs
 set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
 set shiftwidth=4                " Use indents of 4 spaces
@@ -1243,24 +1244,12 @@ let HlUnderCursor=0
 noremap <silent> <F3> :exe "let HlUnderCursor=exists(\"HlUnderCursor\")?HlUnderCursor*-1+1:1"<CR>
 " TODO: see this http://www.vim.org/scripts/script.php?script_id=4306
 
-augroup augroup_jw
-    autocmd FileType python nnoremap <buffer> <F8> :exec '!python' shellescape(@%, 1)<cr>
-augroup END
-
-
 " Display diff with the file.
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 " Display diff from last save.
 command! DiffOrig vert new | setlocal bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 " Disable diff mode.
 command! -nargs=0 Undiff setlocal nodiff noscrollbind wrap
-
-
-augroup augroup_jw
-    autocmd FileType cmake nnoremap <buffer> <leader>t "tciw${<esc>"tpa}<esc>
-    autocmd FileType c,cpp nnoremap <buffer> <leader>i gg/#include<cr>GNo#include ""<esc>i
-augroup END
-
 
 " }}}
 " Demo mode ----------------------------------------------------------{{{
