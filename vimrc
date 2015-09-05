@@ -213,7 +213,7 @@ if has('gui_running')
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif s:is_windows
         "set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
-        set guifont=Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
+        set guifont=Hack:h10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
         " Linux
         set guifont=Inconsolata-g\ for\ Powerline\ 10,Inconsolata-g\ 10,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
@@ -1261,7 +1261,7 @@ command! -nargs=0 Undiff setlocal nodiff noscrollbind wrap
 if 0
     " Make stuff bigger and spacier.
     if 1
-        set guifont=Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
+        set guifont=Hack:h14,Consolas:h14,Andale_Mono:h14,Menlo:h14,Courier_New:h14
         let g:dwm_master_pane_width="80%"
     endif
 
