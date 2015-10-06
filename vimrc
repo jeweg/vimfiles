@@ -44,7 +44,8 @@ if has('gui_running') && !s:is_windows
     " At the moment the patched fonts just don't look nice enough on Windows.
     let s:has_patched_font = 1
 endif
-" Systems I know are patched.
+" My systems that I know are patched.
+echom s:hostname
 if s:hostname == "bravuntu"
     let s:has_patched_font = 1
 elseif s:hostname =~ "SilverSurfer.*"
