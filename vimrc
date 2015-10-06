@@ -45,8 +45,8 @@ if has('gui_running') && !s:is_windows
     let s:has_patched_font = 1
 endif
 " My systems that I know are patched.
-echom s:hostname
-if s:hostname == "bravuntu"
+" echom s:hostname
+if s:hostname =~ "bravuntu.*"
     let s:has_patched_font = 1
 elseif s:hostname =~ "SilverSurfer.*"
     let s:has_patched_font = 1
