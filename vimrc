@@ -40,9 +40,9 @@ let s:temp_dir = expand(s:temp_dir)
 " font. We use a variable here and heuristics. If we figure out better ways,
 " we set the variable accordingly. All respective logic uses the variable.
 let s:has_patched_font = 0
-if has('gui_running')
-    let s:has_patched_font = 1
-endif
+"if has('gui_running') 
+    "let s:has_patched_font = 1
+"endif
 " Systems I know are patched.
 if s:hostname == "bravuntu"
     let s:has_patched_font = 1
@@ -214,8 +214,8 @@ if has('gui_running')
         set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
     elseif s:is_windows
         "set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
-        set guifont=Hack:h10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
-        "set guifont=Consolas:h11,Andale_Mono:h10,Menlo:h10,Courier_New:h10
+        "set guifont=Hack:h10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
+		set guifont=Consolas:h11,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
         " Linux
         set guifont=Inconsolata-g\ for\ Powerline\ 10,Inconsolata-g\ 10,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14

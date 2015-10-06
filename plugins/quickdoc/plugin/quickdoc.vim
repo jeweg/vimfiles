@@ -10,6 +10,7 @@ endif
 
 command! QuickDocQt call quickdoc#qt()
 command! QuickDocCMake call quickdoc#cmake()
+command! QuickDocCpp call quickdoc#cpp()
 
 if !exists('g:quickdoc_map_keys')
     let g:quickdoc_map_keys = 1
@@ -21,5 +22,6 @@ endif
 if g:quickdoc_map_keys
     execute "nnoremap <silent> ".g:quickdoc_map_prefix."q :QuickDocQt<cr>"
     execute "nnoremap <silent> ".g:quickdoc_map_prefix."c :QuickDocCMake<cr>"
+    execute "nnoremap <silent> ".g:quickdoc_map_prefix."p :QuickDocCpp<cr>"
 endif
 
