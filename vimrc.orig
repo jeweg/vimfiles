@@ -40,11 +40,19 @@ let s:temp_dir = expand(s:temp_dir)
 " font. We use a variable here and heuristics. If we figure out better ways,
 " we set the variable accordingly. All respective logic uses the variable.
 let s:has_patched_font = 0
+<<<<<<< HEAD
+"if has('gui_running') 
+    "let s:has_patched_font = 1
+"endif
+" Systems I know are patched.
+=======
 if has('gui_running') && !s:is_windows
     " At the moment the patched fonts just don't look nice enough on Windows.
     let s:has_patched_font = 1
 endif
-" Systems I know are patched.
+" My systems that I know are patched.
+echom s:hostname
+>>>>>>> origin/master
 if s:hostname == "bravuntu"
     let s:has_patched_font = 1
 elseif s:hostname =~ "SilverSurfer.*"
