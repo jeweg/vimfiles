@@ -13,7 +13,7 @@ let s:is_mac = !s:is_windows && !s:is_cygwin
       \   (!executable('xdg-open') &&
       \     system('uname') =~? '^darwin'))
 
-" Normally we would set shellshash on Windows to have unified
+" Normally we would set shellslhash on Windows to have unified
 " path separators.
 " However, this has the side effect of also changing the behaviour
 " of shellescape to use single quotes which Windows cannot handle.
@@ -44,8 +44,11 @@ if has('gui_running') && !s:is_windows
     " At the moment the patched fonts just don't look nice enough on Windows.
     let s:has_patched_font = 1
 endif
-" Systems I know are patched.
+" My systems that I know are patched.
+echom s:hostname
 if s:hostname == "bravuntu"
+    let s:has_patched_font = 1
+elseif s:hostname =~ "SilverSurfer.*"
     let s:has_patched_font = 1
 endif
 
@@ -166,7 +169,7 @@ endfor
 
 " This is a tip from
 " https://github.com/itchyny/lightline.vim/blob/master/doc/lightline.txt.
-" It seems to require
+" It requires
 " export TERM=xterm-256color
 " in .bashrc, though.
 if !has('gui_running')
@@ -210,7 +213,9 @@ if has('gui_running')
 
     " The "for Powerline" fonts come from https://github.com/powerline/fonts
     if s:is_mac
-        set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
+        "set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
+        "set guifont=Inconsolata-g\ for\ Powerline\ 15,Inconsolata-g\ 15,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+        set guifont=Meslo\ LG\ S\ DZ\ Regular\ for\ Powerline:h14
     elseif s:is_windows
         "set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
         set guifont=Hack:h10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
