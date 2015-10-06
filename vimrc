@@ -40,8 +40,7 @@ let s:temp_dir = expand(s:temp_dir)
 " font. We use a variable here and heuristics. If we figure out better ways,
 " we set the variable accordingly. All respective logic uses the variable.
 let s:has_patched_font = 0
-if has('gui_running') && !s:is_windows
-    " At the moment the patched fonts just don't look nice enough on Windows.
+if has('gui_running')
     let s:has_patched_font = 1
 endif
 " Systems I know are patched.
@@ -59,6 +58,8 @@ augroup END
 
 let mapleader = ','
 let g:mapleader = ','
+"let mapleader = '\<Space>'
+"let g:mapleader = '\<Space>'
 let g:maplocalleader = 'm'
 
 "}}}
@@ -110,7 +111,7 @@ Plugin 'duythinht/inori'
 Plugin 'romainl/Apprentice'
 Plugin 'noahfrederick/vim-hemisu'
 
-Plugin 'Valloric/YouCompleteMe'
+"Plugin 'Valloric/YouCompleteMe'
 "Plugin 'scrooloose/syntastic'
 
 if s:is_windows
@@ -214,6 +215,7 @@ if has('gui_running')
     elseif s:is_windows
         "set guifont=Inconsolata-g\ for\ Powerline\ 10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
         set guifont=Hack:h10,Consolas:h10,Andale_Mono:h10,Menlo:h10,Courier_New:h10
+        "set guifont=Consolas:h11,Andale_Mono:h10,Menlo:h10,Courier_New:h10
     else
         " Linux
         set guifont=Inconsolata-g\ for\ Powerline\ 10,Inconsolata-g\ 10,Inconsolata\ 11,Ubuntu\ Mono\ 11,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
@@ -1176,7 +1178,10 @@ endif
 
 if 1
     nnoremap <F5> :call DTEBuildStartupProject()<cr>
-    inoremap <F5> <esc>:call DTEBuildStartupProject()<cr>
+    inoremap <F5> <Esc>:call DTEBuildStartupProject()<cr>
+    "inoremap <F5> <esc>:call DTEBuildStartupProject()<cr>
+    nnoremap <F6> :call DTEPutFile()<cr>
+    nnoremap <F7> :call DTECompileFile()<cr>
 endif
 
 " }}}
@@ -1207,6 +1212,10 @@ noremap <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 " Ctrl-S saves. This might not work in a terminal Vim.
 noremap <C-S> <Esc>:update<CR>
 inoremap <C-S> <Esc>:update<CR>a
+noremap <Leader>w <Esc>:update<CR>
+
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
 
 " nnoremap <Tab> <C-j>
 " nnoremap <S-Tab> <C-k>
