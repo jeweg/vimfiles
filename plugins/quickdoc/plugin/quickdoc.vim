@@ -8,8 +8,6 @@ if !has('python')
     finish
 endif
 
-command! QuickDocQt call quickdoc#qt()
-command! QuickDocCMake call quickdoc#cmake()
 if exists('g:loaded_plugin_quickdoc')
     finish
 endif

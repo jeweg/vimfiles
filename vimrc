@@ -115,14 +115,14 @@ Plugin 'duythinht/inori'
 Plugin 'romainl/Apprentice'
 Plugin 'noahfrederick/vim-hemisu'
 
-"Plugin 'Valloric/YouCompleteMe'
 "Plugin 'scrooloose/syntastic'
 
 if s:is_windows
     Plugin 'lorry-lee/visual_studio.vim'
 else
-    " On Windows, use a precompiled version of Ycm
-    " that's not version-controlled by vundle.
+    " On Windows we use a precompiled version of Ycm
+    " that's not version-controlled by vundle. For all others:
+	" TODO: I think we must recompile the native parts?
 "    Plugin 'Valloric/YouCompleteMe'
 endif
 
@@ -151,14 +151,15 @@ endif
 
 call vundle#end()           
 
-filetype plugin indent on " Required
+" Load filetype plugins and indent files.
+filetype plugin indent on
 
 " }}}
 " Plugins (Manual) ---------------------------------------------------{{{
 
 " A Windows-specific extra plugin.
 if s:is_windows
-    "set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
+    set rtp+=$VIMRUNTIME/../vim-ycm-733de48-windows-x64
 endif
 
 " Find and import manual plugins.
@@ -184,9 +185,10 @@ endif
 
 set background=dark
 if &t_Co >= 256 || has("gui_running")
-    
+
+    let g:solarized_visibility = "low"
     colorscheme solarized
-    
+
     " Solarized is fine, but there are some details I don't like.
     " First of all, it is designed so nothing stands out too much, but in practice, I'd like some
     " things to stand out, like the diff changes and folded regions.
@@ -203,7 +205,7 @@ if &t_Co >= 256 || has("gui_running")
     hi DiffText       term=reverse cterm=reverse ctermfg=81 ctermbg=16 gui=reverse guifg=#8fbfdc guibg=#000000
     hi NonText        guifg=#e8e8f7
     hi SpecialKey     guifg=#e8e8f7
-    
+
 endif
 
 if has('gui_running')
@@ -326,7 +328,9 @@ set foldtext=NeatFoldText()
 
 " Show whitespace?
 set nolist
-set listchars=tab:\ \ ,trail:•,extends:#,nbsp:.
+" Show trailing spaces
+"set listchars=tab:\ \ ,trail:•,extends:#,nbsp:.
+set listchars=tab:\ \ ,trail:\ ,extends:#,nbsp:.
 
 set sessionoptions="blank,buffers,curdir,folds,help,options,tabpages,winsize,winpos,slash,unix"
 set wrap
@@ -397,8 +401,11 @@ set undolevels=1000
 set backspace=indent,eol,start
 
 augroup augroup_jw
-    autocmd FileType vim,unite setlocal nonumber
+    autocmd FileType vim,unite,vimfiler setlocal nonumber
+    autocmd BufEnter * if &filetype == "" | setlocal ft=text | endif
 augroup END
+
+set omnifunc=syntaxcomplete#Complete
 
 " }}}
 " Restore cursor when re-entering window -----------------------------{{{
@@ -732,9 +739,11 @@ if 1
         nmap <buffer><silent> <C-i> :UniteClose<Cr>
         nmap <buffer><silent> <C-o> :UniteClose<Cr>
         nmap <buffer><silent> <C-p> :UniteClose<Cr>
+        nmap <buffer><silent> <C-u> :UniteClose<Cr>
         imap <buffer><silent> <C-i> <Esc>:UniteClose<Cr>
         imap <buffer><silent> <C-o> <Esc>:UniteClose<Cr>
         imap <buffer><silent> <C-p> <Esc>:UniteClose<Cr>
+        imap <buffer><silent> <C-u> <Esc>:UniteClose<Cr>
     endfunction
 
     if executable('ag')
@@ -753,7 +762,19 @@ if 1
               \ --ignore "**/*.pyc"
               \ --ignore "**/*~"
               \ -g ""'
-        let g:unite_source_rec_async_command = 'ag '.g:unite_source_grep_default_opts
+        "let g:unite_source_rec_async_command = ['ag', '--nocolor', '--nogroup', '--hidden', '-S', '-C0', '-g', '']
+        let g:unite_source_rec_async_command = ['ag', '--nocolor', '--nogroup', '--hidden',
+              \ '--ignore', '_build',
+              \ '--ignore', '.git',
+              \ '--ignore', '.svn',
+              \ '--ignore', '.hg',
+              \ '--ignore', 'CVS',
+              \ '--ignore', '.DS_Store',
+              \ '--ignore', '**/*.exe',
+              \ '--ignore', '**/*.obj',
+              \ '--ignore', '**/*.dll',
+              \ '--ignore', '**/*.vcxproj*',
+              \ '-g', '']
     endif
 
 endif
@@ -992,8 +1013,8 @@ if 1
 
     map <C-N> <Plug>DWMNew
     map <C-C> <Plug>DWMClose
-    map <C-Space> <Plug>DWMFocus
     map <C-L> <Plug>DWMFocus
+    "map <C-Space> <Plug>DWMFocus
 
     " map <C-L> <Plug>DWMGrowMaster
     " map <C-H> <Plug>DWMShrinkMaster
@@ -1044,11 +1065,28 @@ if 1
 
     let g:ycm_global_ycm_extra_conf = s:vimfiles_dir . '/.ycm_extra_conf.py'
     
-    let g:ycm_key_invoke_completion = ''
+
+    " Leaving this at the default has extra benefits
+    " (See https://github.com/Valloric/YouCompleteMe#the-gycm_key_invoke_completion-option)
+    "let g:ycm_key_invoke_completion = '<C-Space>'
+    
     let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
 
     nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
     nnoremap <F10> :YcmCompleter GoTo<CR>
+
+    let g:ycm_filetype_blacklist = {
+          \ 'tagbar' : 1,
+          \ 'qf' : 1,
+          \ 'notes' : 1,
+          \ 'markdown' : 1,
+          \ 'unite' : 1,
+          \ 'vimwiki' : 1,
+          \ 'pandoc' : 1,
+          \ 'infolog' : 1,
+          \ 'mail' : 1,
+          \ 'vimfiler' : 1
+          \}
 
     if s:is_windows
         " I just couldn't get semantic C completion to work under Windows.
@@ -1062,7 +1100,7 @@ if 1
     endif
 
     let g:ycm_confirm_extra_conf = 0
-    if 0
+    if 1
         let g:ycm_server_use_vim_stdout = 0
         let g:ycm_server_log_level = 'debug'
         let g:ycm_server_keep_logfiles = 1
@@ -1175,6 +1213,9 @@ if 1
     augroup END
     function! s:my_vimfiler_settings()
         nmap <buffer> <c-u> <Plug>(vimfiler_close)
+        nmap <buffer> <c-i> <Plug>(vimfiler_close)
+        nmap <buffer> <c-o> <Plug>(vimfiler_close)
+        nmap <buffer> <c-p> <Plug>(vimfiler_close)
     endfunction
 endif
 
