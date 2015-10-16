@@ -138,7 +138,7 @@ endif
 " Plugin 'myusuf3/numbers.vim' < Seemed useless for me.
 " Plugin 'kien/ctrlp.vim.git' < Tried hard to like it, but slow and awkward matching sometimes.
 " Plugin 'sgur/ctrlp-extensions.vim' < See above.
-" Plugin 'JazzCore/ctrlp-cmatcher' < Attempt to fix matcher on Linux. Worked better. Couldn't get working on Windows.
+" Plugin 'JazzCore/ctrlp-cmatcher' < Attempt to fix matcher on Linux. Worked better. Wouldn't work on Windows.
 " Plugin 'FelikZ/ctrlp-py-matcher' < Attempt to fix matcher on Windows. Seemed buggy.
 " Plugin 'honza/vim-snippets' < I prefer to add snippets selectively.
 " Plugin 'garbas/vim-snipmate'  < Liked UltiSnips more.
